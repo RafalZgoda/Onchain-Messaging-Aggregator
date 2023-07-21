@@ -1,12 +1,31 @@
 {
   "compilerOptions": {
-      "target": "es5", // Change this depending on what ECMAScript version you want to compile down to
-      "module": "commonjs",
-      "strict": true, // Enables a wide range of type checking behavior
-      "esModuleInterop": true, // Allows default imports from modules with no default export
-      "outDir": "./dist"
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": "./src",
+    "target": "es5"
   },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+, "src/pages/telegram/index.js", "src/pages/telegram/index.tjs"  ],
   "exclude": [
-      "node_modules" // By default includes all TypeScript (.ts, .d.ts and .tsx) files in the entire directory structure specified in include. If you want to exclude some you can do so here.
+    "node_modules"
   ]
 }
