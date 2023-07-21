@@ -60,7 +60,7 @@ export default function Chat() {
 											<h2 className="font-medium text-white text-sm">
 												Person Title
 											</h2>
-											<p className="text-xs text-telegram-gray-100 text-xs">
+											<p className=" text-telegram-gray-100 text-xs">
 												last seen yesterday at 15:54
 											</p>
 										</div>
