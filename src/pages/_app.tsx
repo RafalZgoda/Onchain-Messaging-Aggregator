@@ -1,10 +1,12 @@
 import "../../styles/globals.css";
 import Head from "next/head";
-import Layout from "components/Layout";
+import Layout from "@/components/Layout";
 import { MantineProvider } from "@mantine/core";
 import { WagmiConfig, createConfig } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { useEffect, useState } from "react";
+import { NavigationProgress } from "@mantine/nprogress";
+import { RouterTransition } from "@/components/RouterTransition";
 
 const config = createConfig(
 	getDefaultConfig({
@@ -28,6 +30,7 @@ function MyApp({ Component, pageProps }) {
 						colorScheme: "dark",
 					}}
 				>
+					<RouterTransition />
 					<Head>
 						<title>MSG</title>
 						<meta name="MSG" content="Web3 messaging aggregator" />

@@ -7,6 +7,7 @@ import {
 	rem,
 } from "@mantine/core";
 import { Dots } from "./Dots";
+import Link from "next/link";
 
 const useStyles = createStyles((theme) => ({
 	wrapper: {
@@ -141,9 +142,11 @@ export function HeroText() {
 					>
 						Learn more
 					</Button>
-					<Button className={classes.control} size="lg">
-						Get started
-					</Button>
+					<Link href="login">
+						<Button className={classes.control} size="lg">
+							Get started
+						</Button>
+					</Link>
 				</div>
 			</div>
 		</Container>

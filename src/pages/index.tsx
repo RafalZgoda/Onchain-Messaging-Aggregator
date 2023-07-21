@@ -1,13 +1,12 @@
 import { HeroText } from "@/components/Hero";
-import { Button } from "@mantine/core";
-import { ConnectKitButton } from "connectkit";
-import Link from "next/link";
-import { useAccount } from "wagmi";
+import type { NextPage } from "next";
 
-export default function Home() {
+const Home: NextPage = () => {
 	return (
 		<>
 			<HeroText />
 		</>
 	);
-}
+};
+
+export default Home;
