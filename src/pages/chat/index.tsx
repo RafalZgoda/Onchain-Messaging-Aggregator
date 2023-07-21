@@ -24,25 +24,10 @@ export default function Chat() {
 	return (
 		<>
 			<div className="h-screen">
-				<main className="flex items-center justify-center h-screen">
-					<div className="w-4/5 max-w-5xl rounded-md bg-telegram-gray-300 shadow-lg shadow-gray-800">
-						<header className="flex justify-end p-2 text-xs text-telegram-gray-100 rounded-t-md bg-telegram-gray-200">
-							<div className="flex justify-around cursor-pointer w-28">
-								<SvgGenerator
-									path="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z"
-									className="w-4 h-4"
-								/>
-								<SvgGenerator
-									path="M4 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h 2 0 00-2 2z"
-									className="w-4 h-4"
-								/>
-								<SvgGenerator
-									path="M6 18L18 6M6 6l12 12"
-									className="w-4 h-4"
-								/>
-							</div>
-						</header>
-						<div className="grid grid-cols-3 chat-screen">
+				<main className="flex h-full">
+					<div className="w-full h-full rounded-md bg-telegram-gray-300 shadow-lg shadow-gray-800 ">
+						<header></header>
+						<div className="grid grid-cols-3 h-full">
 							<div className="col-span-1 overflow-hidden">
 								<div className="flex items-center bg-telegram-gray-300 pl-2">
 									<div className="text-telegram-gray-100">
