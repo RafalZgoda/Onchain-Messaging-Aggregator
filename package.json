@@ -11,6 +11,7 @@
   "dependencies": {
     "@headlessui/react": "^1.6.4",
     "@pushprotocol/restapi": "^1.4.2",
+    "@sismo-core/sismo-connect-react": "^0.0.20",
     "@xmtp/xmtp-js": "^10.0.0",
     "axios": "^1.4.0",
     "connectkit": "^1.5.0",

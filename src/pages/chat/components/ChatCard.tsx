@@ -1,11 +1,9 @@
-import Image from "next/image";
-
 export const ChatCard = (props) => {
   const { data } = props;
   return (
     <div className="grid grid-cols-5 p-2 cursor-pointer hover:bg-telegram-gray-200">
       <div className="col-span-1">
-        <Image src={data.img} alt={data.name} className="rounded-full w-15" />
+        <img src={data.img} alt={data.name} className="rounded-full w-15" />
       </div>
       <div className="col-span-4">
         <div className="flex justify-between">
