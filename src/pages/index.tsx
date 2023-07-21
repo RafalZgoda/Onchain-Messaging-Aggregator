@@ -1,17 +1,13 @@
+import { HeroText } from "@/components/Hero";
+import { Button } from "@mantine/core";
 import { ConnectKitButton } from "connectkit";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 
 export default function Home() {
-		return (
+	return (
 		<>
-			<div>
-				<main>
-					<div className="flex items-center justify-center h-screen">
-						<ConnectKitButton />
-					</div>
-				</main>
-			</div>
+			<HeroText />
 		</>
 	);
 }

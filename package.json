@@ -9,7 +9,13 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@emotion/react": "^11.11.1",
+		"@emotion/server": "^11.11.0",
 		"@headlessui/react": "^1.6.4",
+		"@mantine/core": "^6.0.17",
+		"@mantine/hooks": "^6.0.17",
+		"@mantine/modals": "^6.0.17",
+		"@mantine/next": "^6.0.17",
 		"connectkit": "^1.5.0",
 		"next": "12.1.6",
 		"react": "18.1.0",
