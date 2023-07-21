@@ -8,6 +8,8 @@ import {
 } from "@mantine/core";
 import { Dots } from "./Dots";
 import Link from "next/link";
+import { useAccount } from "wagmi";
+import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
 	wrapper: {
@@ -101,7 +103,14 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function HeroText() {
+	const router = useRouter();
+
 	const { classes } = useStyles();
+	const { isConnecting } = useAccount({
+		onConnect() {
+			router.push("/chat");
+		},
+	});
 
 	return (
 		<Container className={classes.wrapper} size={1400}>
@@ -142,11 +151,13 @@ export function HeroText() {
 					>
 						Learn more
 					</Button>
-					<Link href="login">
-						<Button className={classes.control} size="lg">
-							Get started
-						</Button>
-					</Link>
+					<Button
+						className={classes.control}
+						size="lg"
+						loading={isConnecting}
+					>
+						Get started
+					</Button>
 				</div>
 			</div>
 		</Container>
