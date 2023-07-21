@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+      "target": "es5", // Change this depending on what ECMAScript version you want to compile down to
+      "module": "commonjs",
+      "strict": true, // Enables a wide range of type checking behavior
+      "esModuleInterop": true, // Allows default imports from modules with no default export
+      "outDir": "./dist"
+  },
+  "exclude": [
+      "node_modules" // By default includes all TypeScript (.ts, .d.ts and .tsx) files in the entire directory structure specified in include. If you want to exclude some you can do so here.
+  ]
+}
