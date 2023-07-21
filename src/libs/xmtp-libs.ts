@@ -4,15 +4,8 @@ import {
   Conversation as TXMTPConversation,
 } from "@xmtp/xmtp-js";
 import { JsonRpcSigner } from "@ethersproject/providers";
-
-export type TMessage = {
-  id: string;
-  senderAddress: string;
-  recipientAddress: string;
-  sent: Date;
-  content: string;
-  platform: string;
-};
+import { TMessage } from "./types";
+export type { TXMTPClient, TXMTPMessage, TXMTPConversation };
 
 export const initXMTPClient = async function ({
   signer,
