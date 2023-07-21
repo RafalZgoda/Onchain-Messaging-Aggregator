@@ -24,7 +24,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/pages/telegram/index.js", "src/pages/telegram/index.tjs"  ],
   "exclude": [
     "node_modules"
   ]
