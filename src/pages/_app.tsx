@@ -19,25 +19,16 @@ function MyApp({ Component, pageProps }) {
 	useEffect(() => setMounted(true), []);
 
 	return (
-		<div
-			style={{
-				padding: "20px",
-			}}
-		>
-			<WagmiConfig config={config}>
-				<ConnectKitProvider>
-					<Head>
-						<title>Tailwind Some Works</title>
-						<meta
-							name="description"
-							content="Tailwind Some Works"
-						/>
-						<link rel="icon" href="/favicon.ico" />
-					</Head>
-					<Layout>{mounted && <Component {...pageProps} />}</Layout>
-				</ConnectKitProvider>
-			</WagmiConfig>
-		</div>
+		<WagmiConfig config={config}>
+			<ConnectKitProvider>
+				<Head>
+					<title>Tailwind Some Works</title>
+					<meta name="description" content="Tailwind Some Works" />
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
+				<Layout>{mounted && <Component {...pageProps} />}</Layout>
+			</ConnectKitProvider>
+		</WagmiConfig>
 	);
 }
 
