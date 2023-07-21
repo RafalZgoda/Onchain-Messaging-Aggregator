@@ -8,7 +8,6 @@ export default function Home() {
 			<div>
 				<main>
 					<div className="flex items-center justify-center h-screen">
-						<ConnectKitButton />
 					</div>
 				</main>
 			</div>

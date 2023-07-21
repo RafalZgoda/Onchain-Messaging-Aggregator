@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
+import { ConnectKitButton } from "connectkit";
 function classNames(...classes) {
 	return classes.filter(Boolean).join(" ");
 }
@@ -12,8 +12,7 @@ const Header = () => {
 
 	const navigation = [
 		{ name: "Home", href: "/" },
-		{ name: "Whatsapp", href: "/whatsapp" },
-		{ name: "Telegram", href: "/telegram" },
+		{ name: "Chat", href: "/chat" },
 	];
 
 	return (
@@ -40,6 +39,7 @@ const Header = () => {
 										</a>
 									</Link>
 								))}
+								<ConnectKitButton/>
 							</div>
 						</div>
 					</div>

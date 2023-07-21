@@ -9,7 +9,7 @@ const Layout = (props) => {
 	const { children } = props;
 	return (
 		<>
-			{/* <HeaderLayout /> */}
+			{ <HeaderLayout />}
 			{children}
 		</>
 	);
