@@ -87,7 +87,7 @@ function MyApp({ Component, pageProps }) {
 				>
 					<RouterTransition />
 					<Head>
-						<title>MSG</title>
+						<title>S3ND</title>
 						<meta name="MSG" content="Web3 messaging aggregator" />
 						<link rel="icon" href="/favicon.ico" />
 					</Head>
