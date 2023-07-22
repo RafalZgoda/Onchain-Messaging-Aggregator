@@ -1,10 +1,10 @@
-import { initXMTPClient } from "../libs";
+import { initXMTPClient } from "libs";
 
 export default function Home({ setXmtp, wallet, signer, xmtp }) {
   const handleXmtp = async () => {
     const xmtp = await initXMTPClient({ signer });
     setXmtp(xmtp);
-	localStorage.setItem("xmtp", JSON.stringify(xmtp));
+	// localStorage.setItem("xmtp", JSON.stringify(xmtp));
   };
 
   return (

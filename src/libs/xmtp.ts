@@ -37,12 +37,14 @@ export const getConversationXMTP = async function ({
 
 export const getMessagesHistoryXMTP = async function ({
   conversation,
+  userAddress,
 }: {
   conversation: TXMTPConversation;
+  userAddress: string;
 }): Promise<TMessage[]> {
   //Creates a new conversation with the address
   const messages = await conversation.messages();
-  return formatMessagesXMTP({ messages });
+  return formatMessagesXMTP({ messages, userAddress });
 };
 
 export const sendMessageXMTP = async function ({
@@ -66,9 +68,12 @@ export const getConversationsListXMTP = async function ({
 
 export const formatMessagesXMTP = async function ({
   messages,
+  userAddress,
 }: {
   messages: TXMTPMessage[];
+  userAddress: string;
 }): Promise<TMessage[]> {
+  const userAddressLower = userAddress.toLowerCase();
   const formattedMessages: TMessage[] = [];
   for (let i = 0; i < messages.length; i++) {
     const message = messages[i];
@@ -79,6 +84,7 @@ export const formatMessagesXMTP = async function ({
       sent: message.sent,
       content: message.content.toString(),
       platform: "xmtp",
+      me: message.senderAddress.toLowerCase() === userAddressLower,
     };
     formattedMessages.push(formattedMessage);
   }

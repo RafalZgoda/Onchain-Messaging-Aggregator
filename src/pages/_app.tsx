@@ -6,7 +6,8 @@ import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { useEffect, useState } from "react";
 import { type WalletClient } from "@wagmi/core";
 import { watchWalletClient } from "@wagmi/core";
-import { getEthersSigner } from "../libs";
+import { getEthersSigner } from "libs";
+import { providers } from "ethers";
 const config = createConfig(
   getDefaultConfig({
     appName: "Message aggregator",
@@ -19,7 +20,7 @@ function MyApp({ Component, pageProps }) {
   const [mounted, setMounted] = useState(false);
   const [xmtp, setXmtp] = useState(null);
   const [wallet, setWallet] = useState<WalletClient>(null);
-  const [signer, setSigner] = useState(null);
+  const [signer, setSigner] = useState<providers.JsonRpcSigner>(null);
   useEffect(() => setMounted(true), []);
 
   const unwatch = watchWalletClient(

@@ -1,9 +1,55 @@
 import ChatCard from "./components/ChatCard";
-import { chatCard, messages } from "./data";
 import Messages from "./components/Messages";
-import { TXMTPClient } from "../../libs";
+import { useEffect, useState } from "react";
+import {
+  TXMTPClient,
+  getAggregatedConversations,
+  getAggregatedMessages,
+  TConversation,
+  TMessage,
+} from "libs";
+import Router from "next/router";
+import { JsonRpcSigner } from "@ethersproject/providers";
+export default function Chat({
+  xmtp,
+  signer,
+}: {
+  xmtp: TXMTPClient;
+  signer: JsonRpcSigner;
+}) {
+  const [connversations, setConversations] = useState<TConversation[]>([]);
+  const [activeConversation, setActiveConversation] =
+    useState<TConversation>(null);
+  const [messages, setMessages] = useState<TMessage[]>([]);
 
-export default function Chat({ xmtp }: { xmtp: TXMTPClient }) {
+  useEffect(() => {
+    if (!xmtp || !signer) {
+      Router.push("/");
+      return;
+    }
+    const getConversations = async () => {
+      const conversations = await getAggregatedConversations({
+        xmtp_client: xmtp,
+      });
+      setConversations(conversations);
+    };
+    getConversations();
+  }, [xmtp, signer]);
+
+  useEffect(() => {
+    if (!xmtp || !activeConversation || !signer) return;
+    const getMessages = async () => {
+      const userAddress = await signer.getAddress();
+      const messages = await getAggregatedMessages({
+        conversation_xmtp: activeConversation?.conversation_xmtp,
+        userAddress,
+      });
+      console.log(messages);
+      setMessages(messages);
+    };
+    getMessages();
+  }, [xmtp, activeConversation, signer]);
+
   const SvgGenerator = (props) => {
     const { path, className } = props;
     return (
@@ -45,14 +91,22 @@ export default function Chat({ xmtp }: { xmtp: TXMTPClient }) {
                     />
                   </div>
                 </div>
-
                 <div className="overflow-y-scroll h-full">
-                  {xmtp && <p>xtmp connected</p>}
-                  {chatCard.map((item, index) => (
-                    <div key={index}>
-                      <ChatCard data={item} />
+                  {xmtp && connversations && connversations.length > 0 ? (
+                    connversations.map((conversation, index) => (
+                      <div
+                        onClick={() => setActiveConversation(conversation)}
+                        key={index}
+                      >
+                        <ChatCard conversation={conversation} />
+                      </div>
+                    ))
+                  ) : (
+                    //put some skeleton here
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-white text-sm">Loading...</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
               <div className="flex flex-col justify-between col-span-2">
@@ -60,36 +114,33 @@ export default function Chat({ xmtp }: { xmtp: TXMTPClient }) {
                   <div className="flex items-center">
                     <div className="ml-2">
                       <h2 className="font-medium text-white text-sm">
-                        Person Title
+                        {activeConversation?.addressTo}
                       </h2>
                       <p className=" text-telegram-gray-100 text-xs">
-                        last seen yesterday at 15:54
+                        last message at{" "}
+                        {activeConversation?.lastMessageDate.toDateString()}
                       </p>
                     </div>
                   </div>
                   <div className="flex justify-around w-40 text-telegram-gray-100">
-                    <SvgGenerator
+                    <SvgGenerator // logo search
                       path="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                       className="w-5 h-5"
                     />
-                    <SvgGenerator
+                    <SvgGenerator // logo phone
                       path="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                       className="w-5 h-5"
                     />
-                    <SvgGenerator
-                      path="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
-                      className="w-5 h-5"
-                    />
-                    <SvgGenerator
+                    <SvgGenerator // logo params
                       path="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
                       className="w-5 h-5"
                     />
                   </div>
                 </div>
                 <div className="relative pb-3 w-full h-full overflow-y-scroll flex justify-end flex-col bg-telegram-gray-400">
-                  {messages.map((item, index) => (
+                  {messages.map((message, index) => (
                     <div key={index}>
-                      <Messages data={item} />
+                      <Messages message={message} />
                     </div>
                   ))}
                 </div>
