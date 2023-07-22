@@ -1,3 +1,4 @@
+import { truncateHash } from "@/libs/utils/truncate-hash";
 import { useEnsAvatar, useEnsName } from "wagmi";
 
 export default function EnsNameAvatar({
@@ -21,13 +22,17 @@ export default function EnsNameAvatar({
 	});
 
 	return (
-		<div>
+		<div className="flex items-center">
 			<img
 				className="rounded-full w-10 h-10 mr-3"
 				src={ensAvartUrl ?? "/img/eth.png"}
 			></img>
-			<h2 className="font-medium text-white text-sm m-0">{ensName}</h2>
-			<p className=" text-telegram-gray-100 text-xs m-0">{subtext}</p>
+			<div>
+				<h2 className="font-medium text-white text-sm m-0">
+					{ensName ?? truncateHash(address)}
+				</h2>
+				<p className=" text-telegram-gray-100 text-xs m-0">{subtext}</p>
+			</div>
 		</div>
 	);
 }

@@ -1,15 +1,15 @@
 import WorldcoinButton from "@/components/WorldcoinButton";
 import { isVerified } from "@/libs/supabase";
 import { Button, Loader, LoadingOverlay } from "@mantine/core";
-import { TUserProfile } from "libs";
+import { TUserProfile } from "@/libs";
 import Image from "next/image";
 
 export const Profile = ({
-  profile,
-  signer,
+	profile,
+	signer,
 }: {
-  profile: TUserProfile;
-  signer;
+	profile: TUserProfile;
+	signer;
 }) => {
   return (
     <div className="p-10">
