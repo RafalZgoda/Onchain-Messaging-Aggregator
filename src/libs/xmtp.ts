@@ -24,7 +24,9 @@ export const getConversationXMTP = async function ({
   addressTo: string;
 }): Promise<TXMTPConversation | null> {
   //Creates a new conversation with the address
+  console.log(xmtp_client)
   if (await xmtp_client?.canMessage(addressTo)) {
+    console.log('can message')
     const conversation = await xmtp_client.conversations.newConversation(
       addressTo
     );
@@ -54,6 +56,7 @@ export const sendMessageXMTP = async function ({
   conversation: TXMTPConversation;
   message: string;
 }): Promise<void> {
+  console.log(conversation)
   await conversation.send(message);
 };
 
