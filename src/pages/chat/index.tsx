@@ -109,6 +109,7 @@ export default function Chat({
       conversation_push: activeConversation?.conversation_push,
       conversation_push_request: activeConversation?.conversation_push_request,
       pgpPrivateKey: pushPGPKey,
+      otherAddress: activeConversation?.addressTo,
     });
     setMessages(messages);
   };

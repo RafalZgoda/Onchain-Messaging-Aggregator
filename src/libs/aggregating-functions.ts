@@ -14,7 +14,10 @@ import {
 } from "./push";
 import * as PushAPI from "@pushprotocol/restapi";
 
-import { getAllConversationsFromNativeOnchain } from "./native-onchain-message";
+import {
+  getAllConversationsFromNativeOnchain,
+  getMessagesFromNativeOnchain,
+} from "./native-onchain-message";
 export const getAggregatedConversations = async function ({
   xmtp_client,
   pgpPrivateKey,
@@ -34,18 +37,19 @@ export const getAggregatedConversations = async function ({
     address: userAddress,
     pgpPrivateKey,
   });
-  const conversations = mergeConversations({
-    conversationsXMTP: xmtp_conversations,
-    conversationsPush: push_conversations,
-    requestsPush: push_requests,
-  });
-
   const native_conversations = await getAllConversationsFromNativeOnchain(
     userAddress
   );
 
+  const conversations = mergeConversations({
+    conversationsXMTP: xmtp_conversations,
+    conversationsPush: push_conversations,
+    requestsPush: push_requests,
+    nativeConversations: native_conversations,
+  });
+
   const allConversations = [...conversations, ...native_conversations];
-  console.log({ allConversations });
+
   return allConversations;
 };
 
@@ -53,31 +57,49 @@ const mergeConversations = function ({
   conversationsXMTP,
   conversationsPush,
   requestsPush,
+  nativeConversations,
+}: {
+  conversationsXMTP: TConversation[];
+  conversationsPush: TConversation[];
+  requestsPush: TConversation[];
+  nativeConversations: TConversation[];
 }) {
   // Define an empty map to hold the merged conversations
   const mergedConversations = new Map();
 
   // Process XMTP conversations
   for (const conversation of conversationsXMTP) {
-    mergedConversations.set(conversation.addressTo, {
-      ...mergedConversations.get(conversation.addressTo),
+    mergedConversations.set(conversation.addressTo.toLowerCase(), {
+      ...mergedConversations.get(conversation.addressTo.toLowerCase()),
       conversation_xmtp: conversation.conversation_xmtp,
+      addressTo: conversation.addressTo,
     });
   }
 
   // Process Push conversations
   for (const conversation of conversationsPush) {
-    mergedConversations.set(conversation.addressTo, {
-      ...mergedConversations.get(conversation.addressTo),
+    mergedConversations.set(conversation.addressTo.toLowerCase(), {
+      ...mergedConversations.get(conversation.addressTo.toLowerCase()),
       conversation_push: conversation.conversation_push,
+      addressTo: conversation.addressTo,
     });
   }
 
   // Process Request conversations
   for (const conversation of requestsPush) {
-    mergedConversations.set(conversation.addressTo, {
-      ...mergedConversations.get(conversation.addressTo),
+    mergedConversations.set(conversation.addressTo.toLowerCase(), {
+      ...mergedConversations.get(conversation.addressTo.toLowerCase()),
       conversation_push_request: conversation.conversation_push_request,
+      addressTo: conversation.addressTo,
+    });
+  }
+
+  // Process Native conversations
+  for (const conversation of nativeConversations) {
+    mergedConversations.set(conversation.addressTo.toLowerCase(), {
+      ...mergedConversations.get(conversation.addressTo.toLowerCase()),
+      conversation_native: conversation.conversation_native,
+      addressTo: conversation.addressTo,
     });
   }
 
@@ -91,12 +113,14 @@ export const getAggregatedMessages = async function ({
   conversation_push,
   conversation_push_request,
   pgpPrivateKey,
+  otherAddress,
 }: {
   conversation_xmtp?: TXMTPConversation;
   userAddress: string;
   conversation_push?: PushAPI.IFeeds;
   conversation_push_request?: PushAPI.IFeeds;
   pgpPrivateKey: string;
+  otherAddress: string;
 }): Promise<TMessage[]> {
   let messages = [] as TMessage[];
 
@@ -119,6 +143,14 @@ export const getAggregatedMessages = async function ({
       userAddress,
     });
     messages = [...messages, ...push_messages];
+  }
+
+  if (userAddress && otherAddress) {
+    const onchainMessages = await getMessagesFromNativeOnchain(
+      userAddress,
+      otherAddress
+    );
+    messages = [...messages, ...onchainMessages];
   }
 
   return messages;

@@ -29,7 +29,7 @@ export const ChatCard = ({ conversation }: { conversation: TConversation }) => {
       <div className="col-span-4">
         <div className="flex justify-between">
           <h2 className="text-white text-sm">
-            {isEnsNameLoading ? conversation.addressTo : ensName}
+            {ensName ? ensName : conversation.addressTo}
           </h2>
           <p className="text-xs text-telegram-gray-100">07/12/2023 : 12:43</p>
         </div>

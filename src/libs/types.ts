@@ -15,7 +15,7 @@ export type TConversation = {
   conversation_xmtp?: TXMTPConversation;
   conversation_push?: PushAPI.IFeeds;
   conversation_push_request?: PushAPI.IFeeds;
-  conversation_native?: any;
+  conversation_native?: string;
 };
 
 export type TConversationByAddress = {

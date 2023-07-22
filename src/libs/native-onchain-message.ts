@@ -146,30 +146,33 @@ const getAllRawMessages = async (address: string): Promise<TMessage[]> => {
 export const getAllConversationsFromNativeOnchain = async (
   owner: string
 ): Promise<TConversation[]> => {
-  console.log({ owner });
+  owner = "0xb66cd966670d962C227B3EABA30a872DbFb995db";
   const messages = await getAllRawMessages(owner);
 
   const conversations: TConversation[] = messages.map((msg) => ({
-    addressTo: msg.to,
-    lastMessageDate: new Date(msg.timestamp), // assuming the timestamp is in a format that the Date constructor can interpret
+    addressTo: msg.senderAddress as `0x${string}`,
+    conversation_native: msg.senderAddress as `0x${string}`,
+    lastMessageDate: new Date(msg.sentAt), // assuming the timestamp is in a format that the Date constructor can interpret
   }));
 
   return conversations;
 };
 
 // getMessagesFromNativeOnchain("0xb66cd966670d962C227B3EABA30a872DbFb995db");
-export const getConversationFromNativeOnchain = async (
+export const getMessagesFromNativeOnchain = async (
   owner: string,
   other: string
 ): Promise<TMessage[]> => {
   const messages = await getAllRawMessages(owner);
+  console.log({ messages })
   const conversationRaw = messages.filter(
     (msg: any) =>
-      (msg.senderAddress.toLowerCase() === owner.toLowerCase() &&
-        msg.recipientAddress.toLowerCase() === other.toLowerCase()) ||
       (msg.senderAddress.toLowerCase() === other.toLowerCase() &&
-        msg.recipientAddress.toLowerCase() === owner.toLowerCase())
+        msg.recipientAddress.toLowerCase() === owner.toLowerCase()) ||
+      (msg.senderAddress.toLowerCase() === owner.toLowerCase() &&
+        msg.recipientAddress.toLowerCase() === other.toLowerCase())
   );
+  console.log({ conversationRaw });
   // const conversation: TConversation[] = conversationRaw.map((msg) => {
   //   return {
   //     id: msg.hash,
