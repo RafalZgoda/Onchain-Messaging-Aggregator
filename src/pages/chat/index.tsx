@@ -20,7 +20,7 @@ import { Button, Input, Modal, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Checkbox } from "@mantine/core";
 import { getPublicClient } from "@wagmi/core";
-import EnsNameAvatar from "./components/ENSNameAvatar";
+import EnsNameAvatar from "./components/EnsNameAvatar";
 
 const defaultFilters = ["push", "xmtp", "vanilla"];
 
@@ -259,7 +259,7 @@ export default function Chat({
 															conversation.addressTo.includes(
 																e.target.value
 															) ||
-															conversation.ensNameTo.includes(
+															conversation.ensNameTo?.includes(
 																e.target.value
 															)
 													)
