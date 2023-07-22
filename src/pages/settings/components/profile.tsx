@@ -3,6 +3,7 @@ import { isVerified } from "@/libs/supabase";
 import { Button, Loader, LoadingOverlay } from "@mantine/core";
 import { TUserProfile } from "@/libs";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export const Profile = ({
 	profile,
@@ -11,6 +12,16 @@ export const Profile = ({
 	profile: TUserProfile;
 	signer;
 }) => {
+  const [verified, setVerified] = useState(false);
+
+  const checkVerified = async () => {
+    const v = await isVerified(signer._address);
+    setVerified(v);
+  };
+
+  useEffect(() => {
+    checkVerified();
+  }, []);
   return (
     <div className="p-10">
       {!profile && <Loader className="block mt-20 mx-auto" />}
@@ -42,7 +53,7 @@ export const Profile = ({
                 )}
               </h1>
               <p className="m-0 p-0 flex items-center">
-                {isVerified(signer._address) && (
+                {verified && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

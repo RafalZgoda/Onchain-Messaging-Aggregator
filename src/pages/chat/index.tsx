@@ -242,7 +242,7 @@ export default function Chat({
 							<div className="col-span-1 overflow-hidden">
 								<div className="flex items-center bg-[#1F1F23] pl-2">
 									<div className="bg-[#1f1f23]"></div>
-									<div className="m-2 w-full">
+									<div className="m-2 w-full flex">
 										<Input
 											type="text"
 											placeholder="Search a conversation"
@@ -260,7 +260,7 @@ export default function Chat({
 										/>
 										<Tooltip label="Start a new conversation">
 											<button
-												className="cursor-pointer absolute bottom-5 left-5 rounded-[100px] border-none bg-[#3C8AFF] px-[10px] py-2"
+												className="cursor-pointer text-gray-300 rounded-[100px] border-none bg-transparent px-[10px] py-2"
 												onClick={open}
 											>
 												<svg
@@ -269,7 +269,7 @@ export default function Chat({
 													viewBox="0 0 24 24"
 													strokeWidth="1.5"
 													stroke="currentColor"
-													className="w-8 h-8"
+													className="w-7 h-7"
 												>
 													<path
 														strokeLinecap="round"
@@ -410,7 +410,7 @@ export default function Chat({
 										/>
 									))}
 								</div>
-								<div className="flex p-1 bg-[#26282D] rounded-b-[30px] px-5 pb-3">
+								<div className="flex p-1 bg-[#26282D] rounded-b-[30px] px-5 pb-3 pt-5">
 									<input
 										type="text"
 										placeholder="Write a message..."
