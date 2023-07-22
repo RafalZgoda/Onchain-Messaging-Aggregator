@@ -6,7 +6,7 @@ import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { useEffect, useState } from "react";
 import { type WalletClient } from "@wagmi/core";
 import { watchWalletClient } from "@wagmi/core";
-import { getEthersSigner } from "libs";
+import { Platform, getEthersSigner, getUserOnChainData } from "libs";
 import { providers } from "ethers";
 const config = createConfig(
   getDefaultConfig({
@@ -21,6 +21,7 @@ function MyApp({ Component, pageProps }) {
   const [xmtp, setXmtp] = useState(null);
   const [wallet, setWallet] = useState<WalletClient>(null);
   const [signer, setSigner] = useState<providers.JsonRpcSigner>(null);
+  const [myProfile, setMyProfile] = useState(null);
   useEffect(() => setMounted(true), []);
 
   const unwatch = watchWalletClient(
@@ -32,6 +33,14 @@ function MyApp({ Component, pageProps }) {
     }
   );
 
+  const getProfile = async () => {
+    const profile = await getUserOnChainData(
+      await signer.getAddress(),
+      Platform.ethereum
+    );
+    setMyProfile(profile);
+  };
+
   const updateSigner = async () => {
     const signer = await getEthersSigner({ chainId: 1 });
     setSigner(signer);
@@ -41,6 +50,9 @@ function MyApp({ Component, pageProps }) {
     updateSigner();
     if (!wallet) {
       emptyMessagingClient();
+    }
+    if (signer) {
+      getProfile();
     }
   }, [wallet]);
 
@@ -72,6 +84,7 @@ function MyApp({ Component, pageProps }) {
               signer={signer}
               xmtp={xmtp}
               setXmtp={setXmtp}
+              myProfile={myProfile}
             />
           )}
         </Layout>

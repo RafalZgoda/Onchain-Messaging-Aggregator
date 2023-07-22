@@ -1,8 +1,11 @@
 import { Logo } from "components/Logo";
 import { useState } from "react";
+import { Protocols } from "./components/protocols";
+import { TUserProfile } from "libs";
+import { Profile } from "./components/profile";
 
-export default function Settings() {
-    const activeTabCSS = "bg-[#26282d]";
+export default function Settings({ myProfile }: { myProfile: TUserProfile }) {
+  const activeTabCSS = "bg-[#26282d]";
   const [activeTab, setActiveTab] = useState("Profile");
 
   return (
@@ -10,7 +13,12 @@ export default function Settings() {
       <div className="w-2/12 bg-[#1F1F23] flex flex-col p-5">
         <Logo />
         <nav className="flex flex-col gap-5 mt-10 text-white text-xl">
-          <a onClick={() => setActiveTab("Profile")} className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${activeTab == "Profile" ? activeTabCSS : ""}`}>
+          <a
+            onClick={() => setActiveTab("Profile")}
+            className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${
+              activeTab == "Profile" ? activeTabCSS : ""
+            }`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -27,7 +35,12 @@ export default function Settings() {
             </svg>
             Profile
           </a>
-          <a onClick={() => setActiveTab("Protocols")} className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${activeTab == "Protocols" ? activeTabCSS : ""}`}>
+          <a
+            onClick={() => setActiveTab("Protocols")}
+            className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${
+              activeTab == "Protocols" ? activeTabCSS : ""
+            }`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -44,7 +57,12 @@ export default function Settings() {
             </svg>
             Protocols
           </a>
-          <a onClick={() => setActiveTab("Preferences")} className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${activeTab == "Preferences" ? activeTabCSS : ""}`}>
+          <a
+            onClick={() => setActiveTab("Preferences")}
+            className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${
+              activeTab == "Preferences" ? activeTabCSS : ""
+            }`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -63,7 +81,10 @@ export default function Settings() {
           </a>
         </nav>
       </div>
-      <div className="w-10/12 bg-[#26282D]">ds</div>
+      <div className="bg-[#26282D] w-full">
+        {activeTab == "Protocols" && <Protocols />}
+        {activeTab == "Profile" && <Profile profile={myProfile}/> }
+      </div>
     </div>
   );
 }
