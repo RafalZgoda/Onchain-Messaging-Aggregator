@@ -104,7 +104,9 @@ export default function Settings({
             setPushPGPKey={setPushPGPKey}
           />
         )}
-        {activeTab == "Profile" && <Profile profile={myProfile} />}
+        {activeTab == "Profile" && (
+          <Profile profile={myProfile} signer={signer} />
+        )}
       </div>
     </div>
   );

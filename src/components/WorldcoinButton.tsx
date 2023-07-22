@@ -9,7 +9,7 @@ const handleVerify = async (response: any) => {
   await axios.post("/api/worldcoin-verify", response);
 };
 
-export default function Home({ signer: any }) {
+export default function WorldcoinButton({ signer: any }) {
   return (
     <>
       <div>

@@ -13,6 +13,8 @@ import {
   getMessagesPush,
 } from "./push";
 import * as PushAPI from "@pushprotocol/restapi";
+
+import { getAllConversationsFromNativeOnchain } from "./native-onchain-message";
 export const getAggregatedConversations = async function ({
   xmtp_client,
   pgpPrivateKey,
@@ -22,6 +24,7 @@ export const getAggregatedConversations = async function ({
   pgpPrivateKey: string;
   userAddress: string;
 }): Promise<TConversation[]> {
+  console.log({ msg: "fetching conversations", userAddress });
   const xmtp_conversations = await getConversationsListXMTP({ xmtp_client });
   const push_conversations = await getAllConversationsPush({
     address: userAddress,
@@ -36,7 +39,14 @@ export const getAggregatedConversations = async function ({
     conversationsPush: push_conversations,
     requestsPush: push_requests,
   });
-  return conversations;
+
+  const native_conversations = await getAllConversationsFromNativeOnchain(
+    userAddress
+  );
+
+  const allConversations = [...conversations, ...native_conversations];
+  console.log({ allConversations });
+  return allConversations;
 };
 
 const mergeConversations = function ({

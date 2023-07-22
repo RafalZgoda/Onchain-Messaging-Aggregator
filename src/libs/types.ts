@@ -21,6 +21,7 @@ export type TConversation = {
 export type TConversationByAddress = {
   address: string;
   conversations: TConversation[];
+  owner?: string;
 };
 
 export type TMessagePlatform = {
@@ -40,9 +41,9 @@ export const MESSAGE_PLATFORMS = {
     name: "Push",
     imgUrl: "/img/push.png",
   } as TMessagePlatform,
-  vanilla: {
-    id: "vanilla",
-    name: "Vanilla",
+  native: {
+    id: "native",
+    name: "Native",
     imgUrl: "/img/eth.png",
   } as TMessagePlatform,
 };
