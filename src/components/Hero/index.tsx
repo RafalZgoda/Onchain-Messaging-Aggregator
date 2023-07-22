@@ -120,7 +120,7 @@ export function HeroText() {
 		useConnect();
 
 	return (
-		<Container className={classes.wrapper} size={1400}>
+		<Container className={classes.wrapper} size={1400} mt={120}>
 			<Dots className={classes.dots} style={{ left: 0, top: 0 }} />
 			<Dots className={classes.dots} style={{ left: 60, top: 0 }} />
 			<Dots className={classes.dots} style={{ left: 0, top: 140 }} />
@@ -158,20 +158,28 @@ export function HeroText() {
 					>
 						Learn more
 					</Button>
-					<ConnectKitButton.Custom>
-						{({ show }) => {
-							return (
-								<Button
-									className={classes.control}
-									size="lg"
-									loading={isConnecting}
-									onClick={show}
-								>
-									Get started
-								</Button>
-							);
-						}}
-					</ConnectKitButton.Custom>
+					{isConnected ? (
+						<Link href="chat">
+							<Button className={classes.control} size="lg">
+								Chat
+							</Button>
+						</Link>
+					) : (
+						<ConnectKitButton.Custom>
+							{({ show }) => {
+								return (
+									<Button
+										className={classes.control}
+										size="lg"
+										loading={isConnecting}
+										onClick={show}
+									>
+										Get started
+									</Button>
+								);
+							}}
+						</ConnectKitButton.Custom>
+					)}
 				</div>
 			</div>
 		</Container>
