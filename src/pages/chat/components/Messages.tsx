@@ -6,8 +6,8 @@ const Messages = ({ message }: { message: TMessage }) => {
 			<div
 				className={`py-2 px-3 rounded-md text-white ${
 					message.me ? "ml-auto" : "mr-auto"
-				} right-0 m-2.5 text-s bg-telegram-${
-					message.me ? "gray-300" : "gray-200"
+				} right-0 m-2.5 text-s ${
+					message.me ? "bg-[#35506f]" : "bg-[#3a4047]"
 				} w-fit`}
 			>
 				{message.content}

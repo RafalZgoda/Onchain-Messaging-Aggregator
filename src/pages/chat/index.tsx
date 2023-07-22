@@ -16,11 +16,11 @@ import {
 } from "@/libs";
 
 import { JsonRpcSigner } from "@ethersproject/providers";
-import EnsNameAvatar from "./components/EnsNameAvatar";
 import { Button, Input, Modal, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Checkbox } from "@mantine/core";
 import { getPublicClient } from "@wagmi/core";
+import EnsNameAvatar from "./components/ENSNameAvatar";
 
 const defaultFilters = ["push", "xmtp", "vanilla"];
 
