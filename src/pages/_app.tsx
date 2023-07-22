@@ -1,9 +1,12 @@
 import "../../styles/globals.css";
 import Head from "next/head";
-import Layout from "components/Layout";
+import Layout from "@/components/Layout";
+import { MantineProvider } from "@mantine/core";
 import { WagmiConfig, createConfig } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { useEffect, useState } from "react";
+import { NavigationProgress } from "@mantine/nprogress";
+import { RouterTransition } from "@/components/RouterTransition";
 import { type WalletClient } from "@wagmi/core";
 import { watchWalletClient } from "@wagmi/core";
 import { getEthersSigner } from "libs";
@@ -56,28 +59,30 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  return (
-    <WagmiConfig config={config}>
-      <ConnectKitProvider>
-        <Head>
-          <title>Tailwind Some Works</title>
-          <meta name="description" content="Tailwind Some Works" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <Layout>
-          {mounted && (
-            <Component
-              {...pageProps}
-              wallet={wallet}
+	return (
+		<WagmiConfig config={config}>
+			<ConnectKitProvider>
+      <MantineProvider
+					withGlobalStyles
+					withNormalizeCSS
+					theme={{
+						colorScheme: "dark",
+					}}
+				>
+					<RouterTransition />
+					<Head>
+						<title>MSG</title>
+						<meta name="MSG" content="Web3 messaging aggregator" />
+						<link rel="icon" href="/favicon.ico" />
+					</Head>
+					<Layout>{mounted && <Component {...pageProps} wallet={wallet}
               signer={signer}
               xmtp={xmtp}
-              setXmtp={setXmtp}
-            />
-          )}
-        </Layout>
-      </ConnectKitProvider>
-    </WagmiConfig>
-  );
+              setXmtp={setXmtp} />}</Layout>
+				</MantineProvider>
+			</ConnectKitProvider>
+		</WagmiConfig>
+	);
 }
 
 export default MyApp;
