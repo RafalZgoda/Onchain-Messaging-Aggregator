@@ -20,7 +20,6 @@ const Protocol = ({
   platform: TMessagePlatform;
 }) => {
   const [isProtocolSet, setIsProtocolSet] = useState(false);
-  const [whatProtocol, setWhatProtocol] = useState(null);
 
   useEffect(() => {
     updateSetProtocol();
@@ -61,7 +60,7 @@ const Protocol = ({
       <Image
         width={128}
         height={128}
-        src={"/img/" + platform.imgUrl}
+        src={platform.imgUrl}
         alt={platform.name}
       />
       <h1 className="font-bold mt-3 text-xl text-white">{platform.name}</h1>
