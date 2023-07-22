@@ -1,4 +1,5 @@
 import { MESSAGE_PLATFORMS } from "libs";
+import Image from "next/image";
 
 const Protocol = ({ img, title }: { img: string; title: string }) => {
   const getButtonText = () => {
@@ -13,7 +14,7 @@ const Protocol = ({ img, title }: { img: string; title: string }) => {
   };
   return (
     <div className="w-64      rounded flex flex-col p-10 items-center justify-end">
-      <img src={"img/" + img} className="w-32" />
+      <Image width={128} height={128} src={"img/" + img} alt={title} />
       <h1 className="font-bold mt-3 text-xl text-white">{title}</h1>
       <button className="border-none bg-[#3C8AFF] text-white px-5 py-2 mt-10  rounded-lg">
         {getButtonText()}
@@ -30,7 +31,12 @@ export const Protocols = () => {
         <Protocol img="push.png" title={MESSAGE_PLATFORMS.push.name} />
         <Protocol img="xmtp.png" title={MESSAGE_PLATFORMS.xmtp.name} />
       </div>
-    <p className="text-center text-white w-8/12 mx-auto">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque eligendi adipisci obcaecati quod dolor nihil ipsam dignissimos quasi, quia pariatur. Eligendi, quaerat eveniet rem voluptas reiciendis maiores? Quis, molestias iste?</p>
+      <p className="text-center text-white w-8/12 mx-auto">
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque eligendi
+        adipisci obcaecati quod dolor nihil ipsam dignissimos quasi, quia
+        pariatur. Eligendi, quaerat eveniet rem voluptas reiciendis maiores?
+        Quis, molestias iste?
+      </p>
     </div>
   );
 };
