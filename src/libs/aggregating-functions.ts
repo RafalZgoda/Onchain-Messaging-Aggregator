@@ -140,9 +140,6 @@ export const getAggregatedMessages = async function ({
       pgpPrivateKey,
       userAddress,
     });
-    console.log({
-      lastNewPushMessage: push_messages[0],
-    });
     messages = [...messages, ...push_messages];
   }
 

@@ -20,7 +20,7 @@ import { JsonRpcSigner } from "@ethersproject/providers";
 import { Button, Input, Modal, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Checkbox } from "@mantine/core";
-import { getPublicClient } from "@wagmi/core";
+import { useRouter } from "next/router";
 import EnsNameAvatar from "./components/EnsNameAvatar";
 
 export default function Chat({
@@ -32,9 +32,12 @@ export default function Chat({
   signer: JsonRpcSigner;
   pushPGPKey: string;
 }) {
-  const publicClient = getPublicClient({
-    chainId: 1,
-  });
+  const router = useRouter();
+  useEffect(() => {
+    if (!signer) {
+      router.push("/");
+    }
+  }, [signer]);
 
   const [connversations, setConversations] = useState<TConversation[]>([]);
   const [activeConversation, setActiveConversation] =
@@ -54,7 +57,7 @@ export default function Chat({
 
   useEffect(() => {
     if (!signer) return;
-    getConversations();
+    //getConversations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xmtp, signer, pushPGPKey]);
 
@@ -103,7 +106,6 @@ export default function Chat({
     setNewMessageModalVisibility(false);
     close();
   };
-
 
   useEffect(() => {
     //update filtered messages
@@ -183,13 +185,13 @@ export default function Chat({
   // }, []);
 
   // set interval which click on refresh button (using id) every 10 seconds
-  useEffect(() => {
-    if (!signer) return;
-    const interval = setInterval(() => {
-      document.getElementById("refreshBtn").click();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+//   useEffect(() => {
+//     if (!signer) return;
+//     const interval = setInterval(() => {
+//       document.getElementById("refreshBtn").click();
+//     }, 5000);
+//     return () => clearInterval(interval);
+//   }, []);
 
   const SvgGenerator = (props) => {
     const { path, className } = props;

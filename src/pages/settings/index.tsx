@@ -1,9 +1,11 @@
 import { Logo } from "components/Logo";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Protocols } from "./components/protocols";
 import { TUserProfile, TXMTPClient } from "@/libs";
 import { Profile } from "./components/profile";
 import { providers } from "ethers";
+import { useRouter } from "next/router";
+
 export default function Settings({
   myProfile,
   setXmtp,
@@ -19,8 +21,14 @@ export default function Settings({
   pushPGPKey: string;
   setPushPGPKey: any;
 }) {
-	const activeTabCSS = "bg-[#26282d]";
-	const [activeTab, setActiveTab] = useState("Profile");
+  const activeTabCSS = "bg-[#26282d]";
+  const [activeTab, setActiveTab] = useState("Profile");
+  const router = useRouter();
+  useEffect(() => {
+    if (!signer) {
+      router.push("/");
+    }
+  }, [signer]);
 
   return (
     <div className="w-full h-screen flex">
@@ -107,7 +115,7 @@ export default function Settings({
         {activeTab == "Profile" && (
           <Profile profile={myProfile} signer={signer} />
         )}
-			</div>
-		</div>
-	);
+      </div>
+    </div>
+  );
 }
