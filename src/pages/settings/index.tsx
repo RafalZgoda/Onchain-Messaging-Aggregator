@@ -95,8 +95,10 @@ export default function Settings({
 					<Protocols setXmtp={setXmtp} signer={signer} xmtp={xmtp} />
 				)}
 				{activeTab == "Profile" && (
-					<Profile signer={signer} profile={myProfile} />
-				)}
+					(
+          <Profile signer={signer} profile={myProfile} signer={signer} />
+				)
+        )}
 			</div>
 		</div>
 	);

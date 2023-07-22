@@ -1,7 +1,9 @@
 import WorldcoinButton from "@/components/WorldcoinButton";
 import { isVerified } from "@/libs/supabase";
 import { Button, Loader, LoadingOverlay } from "@mantine/core";
+import WorldcoinButton from "../../../components/WorldcoinButton";
 import { TUserProfile } from "@/libs";
+import { providers } from "ethers";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
