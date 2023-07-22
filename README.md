@@ -7,13 +7,25 @@
 This is a [Next.js](https://nextjs.org/) project.
 
 ### First install packages and it's dependencies
+
 ```
 npm install
 ```
 
 ### Run the development server
+
 ```
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+Supabse :
+
+Owner address :
+List of addresses conversation
+Last seen ID message
+Date last seen
+isWorldCoin
+isSismo
+isPOA
