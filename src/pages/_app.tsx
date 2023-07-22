@@ -1,13 +1,15 @@
 import "../../styles/globals.css";
 import Head from "next/head";
-import Layout from "components/Layout";
+import { MantineProvider } from "@mantine/core";
 import { WagmiConfig, createConfig } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { useEffect, useState } from "react";
 import { type WalletClient } from "@wagmi/core";
 import { watchWalletClient } from "@wagmi/core";
-import { getEthersSigner } from "libs";
+import { Platform, getEthersSigner, getUserOnChainData } from "libs";
 import { providers } from "ethers";
+import Layout from "@/components/Layout";
+import { RouterTransition } from "@/components/RouterTransition";
 const config = createConfig(
   getDefaultConfig({
     appName: "Message aggregator",
@@ -21,6 +23,7 @@ function MyApp({ Component, pageProps }) {
   const [xmtp, setXmtp] = useState(null);
   const [wallet, setWallet] = useState<WalletClient>(null);
   const [signer, setSigner] = useState<providers.JsonRpcSigner>(null);
+  const [myProfile, setMyProfile] = useState(null);
   useEffect(() => setMounted(true), []);
 
   const unwatch = watchWalletClient(
@@ -31,6 +34,16 @@ function MyApp({ Component, pageProps }) {
       setWallet(walletClient);
     }
   );
+
+  const getProfile = async () => {
+    console.log("getting profile")
+    const profile = await getUserOnChainData(
+      await signer.getAddress(),
+      Platform.ethereum
+    );
+    console.log(profile);
+    setMyProfile(profile);
+  };
 
   const updateSigner = async () => {
     const signer = await getEthersSigner({ chainId: 1 });
@@ -44,6 +57,12 @@ function MyApp({ Component, pageProps }) {
     }
   }, [wallet]);
 
+  useEffect(() => {
+    if (signer) {
+      getProfile();
+    }
+  }, [signer]);
+
   const emptyMessagingClient = () => {
     setXmtp(null);
   };
@@ -56,25 +75,31 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  return (
-    <WagmiConfig config={config}>
-      <ConnectKitProvider>
-        <Head>
-          <title>Tailwind Some Works</title>
-          <meta name="description" content="Tailwind Some Works" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <Layout>
-          {mounted && (
-            <Component
-              {...pageProps}
-              wallet={wallet}
+	return (
+		<WagmiConfig config={config}>
+			<ConnectKitProvider>
+      <MantineProvider
+					withGlobalStyles
+					withNormalizeCSS
+					theme={{
+						colorScheme: "dark",
+					}}
+				>
+					<RouterTransition />
+					<Head>
+						<title>S3ND</title>
+						<meta name="MSG" content="Web3 messaging aggregator" />
+						<link rel="icon" href="/favicon.ico" />
+					</Head>
+					<Layout>{mounted && <Component {...pageProps} wallet={wallet}
               signer={signer}
               xmtp={xmtp}
               setXmtp={setXmtp}
+              myProfile={myProfile}
             />
-          )}
+          }
         </Layout>
+        </MantineProvider>
       </ConnectKitProvider>
     </WagmiConfig>
   );

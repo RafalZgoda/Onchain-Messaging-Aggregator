@@ -29,17 +29,17 @@ export const MESSAGE_PLATFORMS = {
   xmtp: {
     id: "xmtp",
     name: "XMTP",
-    imgUrl: "https://i.pravatar.cc/45?img=11",
+    imgUrl: "xmtp.png",
   } as TMessagePlatform,
   push: {
     id: "push",
     name: "Push",
-    imgUrl: "https://i.pravatar.cc/45?img=12",
+    imgUrl: "push.png",
   } as TMessagePlatform,
   vanilla: {
     id: "vanilla",
     name: "Vanilla",
-    imgUrl: "https://i.pravatar.cc/45?img=13",
+    imgUrl: "eth.png",
   } as TMessagePlatform,
 };
 

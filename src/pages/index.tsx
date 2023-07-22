@@ -1,42 +1,31 @@
-import { initXMTPClient } from "libs";
+// react page
 
-export default function Home({ setXmtp, wallet, signer, xmtp }) {
-  const handleXmtp = async () => {
-    const xmtp = await initXMTPClient({ signer });
-    setXmtp(xmtp);
-	// localStorage.setItem("xmtp", JSON.stringify(xmtp));
-  };
+// import WorldcoinButton from "../components/WorldcoinButton";
+// import SismoButton from "../components/SismoButton";
 
-  return (
-    <>
-      <div>
-        <main>
-          <div className="flex items-center justify-center h-screen">
-            {wallet ? (
-              <div>
-                <h1>Sign-in with:</h1>
-                <ul>
-                  {xmtp ? (
-                    <li>
-                      <p>XMTP connected</p>
-                    </li>
-                  ) : (
-                    <li>
-                      <button onClick={() => handleXmtp()}>
-                        Connect to XMTP
-                      </button>
-                    </li>
-                  )}
-                </ul>
-              </div>
-            ) : (
-              <div>
-                <h1>Connect wallet first</h1>
-              </div>
-            )}
-          </div>
-        </main>
-      </div>
-    </>
-  );
-}
+// export default function Home() {
+//   return (
+//     <>
+//       <div>
+//         <main>
+//           <div className="flex items-center justify-center h-screen">
+//             <WorldcoinButton signer={signer}></WorldcoinButton>
+//             <SismoButton></SismoButton>
+//           </div>
+//         </main>
+//       </div>
+//     </>
+//   );
+// }
+import { HeroText } from "@/components/Hero";
+import type { NextPage } from "next";
+
+const Home: NextPage = () => {
+	return (
+		<>
+			<HeroText />
+		</>
+	);
+};
+
+export default Home;

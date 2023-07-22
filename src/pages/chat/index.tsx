@@ -1,6 +1,7 @@
 import ChatCard from "./components/ChatCard";
 import Messages from "./components/Messages";
 import { useEffect, useState } from "react";
+import React from "react";
 import {
   TXMTPClient,
   getAggregatedConversations,
@@ -13,6 +14,8 @@ import {
 } from "libs";
 import Router from "next/router";
 import { JsonRpcSigner } from "@ethersproject/providers";
+import { useAccount } from "wagmi";
+
 export default function Chat({
   xmtp,
   signer,
