@@ -137,6 +137,11 @@ export default function Chat({
 		const conversations = await getAggregatedConversations({
 			xmtp_client: xmtp,
 		});
+		conversations.forEach(async (conversation, i) => {
+			conversations[i].ensName = await publicClient.getEnsName({
+				address: conversation.addressTo,
+			});
+		});
 		setConversations(conversations);
 	};
 
@@ -252,6 +257,9 @@ export default function Chat({
 													connversations.filter(
 														(conversation) =>
 															conversation.addressTo.includes(
+																e.target.value
+															) ||
+															conversation.ensName?.includes(
 																e.target.value
 															)
 													)
