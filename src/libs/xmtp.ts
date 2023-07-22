@@ -4,7 +4,7 @@ import {
   Conversation as TXMTPConversation,
 } from "@xmtp/xmtp-js";
 import { JsonRpcSigner } from "@ethersproject/providers";
-import { TMessage, MESSAGE_PLATFORMS } from "./types";
+import { TMessage, MESSAGE_PLATFORMS, TConversation } from "./types";
 export type { TXMTPClient, TXMTPMessage, TXMTPConversation };
 
 export const initXMTPClient = async function ({
@@ -24,9 +24,9 @@ export const getConversationXMTP = async function ({
   addressTo: string;
 }): Promise<TXMTPConversation | null> {
   //Creates a new conversation with the address
-  console.log(xmtp_client)
+  console.log(xmtp_client);
   if (await xmtp_client?.canMessage(addressTo)) {
-    console.log('can message')
+    console.log("can message");
     const conversation = await xmtp_client.conversations.newConversation(
       addressTo
     );
@@ -45,6 +45,7 @@ export const getMessagesHistoryXMTP = async function ({
   userAddress: string;
 }): Promise<TMessage[]> {
   //Creates a new conversation with the address
+  if (!conversation) return [];
   const messages = await conversation.messages();
   return formatMessagesXMTP({ messages, userAddress });
 };
@@ -56,7 +57,7 @@ export const sendMessageXMTP = async function ({
   conversation: TXMTPConversation;
   message: string;
 }): Promise<void> {
-  console.log(conversation)
+  console.log(conversation);
   await conversation.send(message);
 };
 
@@ -64,9 +65,11 @@ export const getConversationsListXMTP = async function ({
   xmtp_client,
 }: {
   xmtp_client: TXMTPClient;
-}): Promise<TXMTPConversation[]> {
+}): Promise<TConversation[]> {
+  if (!xmtp_client) return [];
   const conversations = await xmtp_client.conversations.list();
-  return conversations;
+  const formattedConversations = formatConversationsXMTP(conversations);
+  return formattedConversations;
 };
 
 export const formatMessagesXMTP = async function ({
@@ -84,7 +87,7 @@ export const formatMessagesXMTP = async function ({
       id: message.id,
       senderAddress: message.senderAddress,
       recipientAddress: message.recipientAddress || "",
-      sent: message.sent,
+      sentAt: message.sent,
       content: message.content.toString(),
       platform: MESSAGE_PLATFORMS.xmtp,
       me: message.senderAddress.toLowerCase() === userAddressLower,
@@ -112,4 +115,20 @@ export const streamMessagesXMTP = async ({
       // updateMessages(oldMessages, newMsg);
     }
   }
+};
+
+const formatConversationsXMTP = function (
+  conversationsXMTP: TXMTPConversation[]
+): TConversation[] {
+  const conversations = conversationsXMTP.map((conversation) => {
+    return {
+      id: "randomId",
+      addressTo: conversation.peerAddress as `0x${string}`,
+      platform: MESSAGE_PLATFORMS.xmtp,
+      imgUrl: "https://i.pravatar.cc/45?img=11",
+      lastMessageDate: new Date(),
+      conversation_xmtp: conversation,
+    };
+  });
+  return conversations;
 };

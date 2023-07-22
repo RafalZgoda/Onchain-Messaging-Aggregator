@@ -18,9 +18,9 @@ const Messages = ({ message }: { message: TMessage }) => {
 					message.me ? "right-2" : "left-3"
 				}`}
 			>
-				{new Date().toDateString() === message.sent.toDateString()
-					? message.sent.toLocaleTimeString()
-					: message.sent.toLocaleDateString()}
+				{new Date().toDateString() === message.sentAt.toDateString()
+					? message.sentAt.toLocaleTimeString()
+					: message.sentAt.toLocaleDateString()}
 			</span>
 		</div>
 	);
