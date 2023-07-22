@@ -1,8 +1,15 @@
+import WorldcoinButton from "@/components/WorldcoinButton";
 import { Button, Loader, LoadingOverlay } from "@mantine/core";
 import { TUserProfile } from "libs";
 import Image from "next/image";
 
-export const Profile = ({ profile }: { profile: TUserProfile }) => {
+export const Profile = ({
+  profile,
+  signer,
+}: {
+  profile: TUserProfile;
+  signer;
+}) => {
   return (
     <div className="p-10">
       {!profile && <Loader className="block mt-20 mx-auto" />}
@@ -36,18 +43,18 @@ export const Profile = ({ profile }: { profile: TUserProfile }) => {
               <p className="m-0 p-0">{profile?.identity}</p>
             </div>
           </div>
-          <div className="w-6/12 bg-white  px-10 py-5 flex rounded-[20px] flex-col">
+          <div className="w-6/12 bg-white py-5 flex rounded-[20px] items-center">
             <img
               src="img/worldcoin.png"
-              className="mx-auto w-80 h-10 object-cover"
+              className="mx-auto w-72 h-10 object-cover"
             />
-            <h1 className="text-black text-center text-lg">
-              Proove your uniqueness and humaness. <br></br>Verify your account
-              using World ID
-            </h1>
-            <Button className="w-fit mx-auto bg-black hover:opacity-90 hover:bg-black transition">
-              Verify
-            </Button>
+            <div className="flex items-end flex-col px-5">
+              <h1 className="text-black text-right text-sm p-0 mb-3">
+                Prove your uniqueness and humaness. <br></br>Verify your account
+                using World ID
+              </h1>
+              <WorldcoinButton signer={signer}></WorldcoinButton>
+            </div>
           </div>
         </div>
       )}
@@ -55,7 +62,7 @@ export const Profile = ({ profile }: { profile: TUserProfile }) => {
         return (
           <div
             key={index}
-            className="bg-[#38383fb7] w-6/12 px-10 py-5 flex rounded-[50px]"
+            className="mb-3 bg-[#38383fb7] w-6/12 px-10 py-5 flex rounded-[50px]"
           >
             <Image
               src={"/img/" + neighbor.source + ".png"}

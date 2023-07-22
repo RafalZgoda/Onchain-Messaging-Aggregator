@@ -146,7 +146,7 @@ export default function Chat({
 
   return (
     <>
-      <div className="h-[calc(100vh-60px)]">
+      <div className="h-[calc(100vh-60px)] ">
         {newMessageModalVisibility && (
           <div className="absolute z-10 w-full bg-black/70 flex justify-center items-center">
             <div className="bg-white/10 w-[34rem] h-[24rem] flex-row">
@@ -179,11 +179,11 @@ export default function Chat({
           </div>
         )}
         <main className="flex h-full">
-          <div className="w-full h-full rounded-md bg-telegram-gray-300 shadow-lg shadow-gray-800 ">
+          <div className="w-full h-full rounded-md bg-[#1f1f23] shadow-lg shadow-gray-800 ">
             <div className="grid grid-cols-3 h-full">
               <div className="col-span-1 overflow-hidden">
                 <div className="flex items-center bg-[#1F1F23] pl-2">
-                  <div className="text-telegram-gray-100">
+                  <div className="bg-[#1f1f23]">
                     <SvgGenerator
                       path="M4 6h16M4 12h16M4 18h16"
                       className="w-6 h-6 m-2"
@@ -207,10 +207,10 @@ export default function Chat({
                   {xmtp && connversations && connversations.length > 0 ? (
                     connversations.map((conversation, index) => (
                       <div
-                        className={`${
+                        className={`rounded-2xl ml-5 ${
                           activeConversation?.addressTo ===
                           conversation.addressTo
-                            ? "bg-red-200"
+                            ? "bg-[#222226]"
                             : ""
                         }`}
                         onClick={() => handlerActiveConversation(conversation)}
@@ -248,6 +248,7 @@ export default function Chat({
                   </div>
                   <div className="w-40 text-telegram-gray-100 flex justify-end">
                     <button
+                    className="border-none bg-transparent cursor-pointer"
                       onClick={() => {
                         setPlatformsFilterVisibility(
                           !platformsFilterVisibility
@@ -263,10 +264,10 @@ export default function Chat({
                 </div>
 
                 {platformsFilterVisibility && (
-                  <div className="flex items-center justify-center bg-telegram-gray-300">
+                  <div className="flex items-center justify-center bg-[#26282d]">
                     <p>Filters:</p>
                     <ul className="flex">
-                      <li>
+                      <li className="mr-10">
                         <input
                           // all platforms
                           type="checkbox"
@@ -277,17 +278,17 @@ export default function Chat({
                             platformsFilter.length ===
                             MESSAGE_PLATFORMS_ARRAY.length
                           }
-                          className="w-3 h-3"
+                          className="w-3 h-3 mr-3"
                         />
                         <label>All</label>
                       </li>
                       {MESSAGE_PLATFORMS_ARRAY.map((platform, index) => (
-                        <li key={index}>
+                        <li key={index} className="mr-10">
                           <input
                             type="checkbox"
                             onChange={() => handleFilterPlatform(platform)}
                             checked={platformsFilter.includes(platform)}
-                            className="w-3 h-3"
+                            className="w-3 h-3 mr-3"
                           />
                           <label>{platform.name}</label>
                         </li>
@@ -296,11 +297,9 @@ export default function Chat({
                   </div>
                 )}
 
-                <div className="relative pb-3 w-full h-full overflow-y-scroll flex justify-end flex-col bg-[#26282D]">
+                <div className="relative pb-3 w-full h-full overflow-y-scroll flex justify-end flex-col bg-[#26282D] px-8 gap-2">
                   {filteredMessages.map((message, index) => (
-                    <div key={index}>
-                      <Messages message={message} />
-                    </div>
+                      <Messages key={index} message={message} />
                   ))}
                 </div>
                 <div className="flex p-1 bg-[#26282D] rounded-b-[30px] px-5 pb-3">

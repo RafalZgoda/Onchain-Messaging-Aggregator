@@ -17,14 +17,14 @@ export default function Settings({
 }) {
   const activeTabCSS = "bg-[#26282d]";
   const [activeTab, setActiveTab] = useState("Profile");
-
+  
   return (
     <div className="w-full h-screen flex">
       <div className="w-2/12 bg-[#1F1F23] flex flex-col p-5">
-        <nav className="flex flex-col gap-5 text-white text-xl">
+        <nav className="flex flex-col gap-2 text-white text-xl">
           <a
             onClick={() => setActiveTab("Profile")}
-            className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${
+            className={`cursor-pointer hover:bg-[#26282d] transition flex items-center text-sm p-3 rounded-xl ${
               activeTab == "Profile" ? activeTabCSS : ""
             }`}
           >
@@ -46,7 +46,7 @@ export default function Settings({
           </a>
           <a
             onClick={() => setActiveTab("Protocols")}
-            className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${
+            className={`cursor-pointer hover:bg-[#26282d] transition flex items-center text-sm  p-3 rounded-xl ${
               activeTab == "Protocols" ? activeTabCSS : ""
             }`}
           >
@@ -68,7 +68,7 @@ export default function Settings({
           </a>
           <a
             onClick={() => setActiveTab("Preferences")}
-            className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${
+            className={`cursor-pointer hover:bg-[#26282d] transition flex items-center text-sm  p-3 rounded-xl ${
               activeTab == "Preferences" ? activeTabCSS : ""
             }`}
           >
@@ -94,7 +94,7 @@ export default function Settings({
         {activeTab == "Protocols" && (
           <Protocols setXmtp={setXmtp} signer={signer} xmtp={xmtp} />
         )}
-        {activeTab == "Profile" && <Profile profile={myProfile} />}
+        {activeTab == "Profile" && <Profile signer={signer} profile={myProfile} />}
       </div>
     </div>
   );

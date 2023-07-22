@@ -16,7 +16,7 @@ export const ChatCard = ({ conversation }: { conversation: TConversation }) => {
   });
 
   return (
-    <div className="grid grid-cols-5 p-2 cursor-pointer hover:bg-telegram-gray-200">
+    <div className="grid grid-cols-5 p-2 cursor-pointer rounded-2xl hover:bg-[#222226] items-center">
       <div className="col-span-1">
         <Image
           src={ensAvartUrl ?? "/img/eth.png"}

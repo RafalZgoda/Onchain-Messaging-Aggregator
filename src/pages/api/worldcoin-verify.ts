@@ -33,10 +33,10 @@ export default function handler(
         // this is where you should perform backend actions based on the verified credential
         // i.e. setting a user as "verified" in a database
         console.log({ wldResponse });
-        const supabaseResponse = await updateBadges("signer", {
-          isVerifiedWorldcoin: true,
-        });
-        console.log({ supabaseResponse });
+        // const supabaseResponse = await updateBadges("signer", {
+        //   isVerifiedWorldcoin: true,
+        // });
+        // console.log({ supabaseResponse });
         res.status(verifyRes.status).send({ code: "success" });
       } else {
         // return the error code and detail from the World ID /verify endpoint to our frontend
