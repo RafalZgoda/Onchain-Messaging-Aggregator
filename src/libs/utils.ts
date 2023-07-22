@@ -1,15 +1,16 @@
 export function truncateHash(
-	address: string,
-	numLettersBefore: number,
-	numLettersAfter: number
+	hash: string,
+	numLettersBefore?: number,
+	numLettersAfter?: number
 ): string {
-	if (address.length < numLettersBefore + numLettersAfter) {
-		return address;
+	numLettersBefore = numLettersBefore || 5;
+	numLettersAfter = numLettersAfter || 3;
+	if (hash.length < numLettersBefore + numLettersAfter) {
+		return hash;
 	}
-
 	const truncatedHash =
-		address.substring(0, numLettersBefore) +
+		hash.substring(0, numLettersBefore) +
 		"..." +
-		address.substring(address.length - numLettersAfter);
+		hash.substring(hash.length - numLettersAfter);
 	return truncatedHash;
 }
