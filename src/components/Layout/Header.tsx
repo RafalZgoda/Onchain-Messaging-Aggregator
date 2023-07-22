@@ -12,6 +12,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronDown } from "@tabler/icons-react";
 import { ConnectKitButton } from "connectkit";
+import { Logo } from "../Logo";
 
 const HEADER_HEIGHT = rem(60);
 
@@ -126,7 +127,7 @@ export default function HeaderAction({ links }: HeaderActionProps) {
 						className={classes.burger}
 						size="sm"
 					/>
-					<h1 className="bold">MSG</h1>
+					<Logo />
 				</Group>
 				<Group spacing={5} className={classes.links}>
 					{items}

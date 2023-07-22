@@ -8,8 +8,9 @@ import {
 } from "@mantine/core";
 import { Dots } from "./Dots";
 import Link from "next/link";
-import { useAccount } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 import { useRouter } from "next/router";
+import { ConnectKitButton } from "connectkit";
 
 const useStyles = createStyles((theme) => ({
 	wrapper: {
@@ -106,11 +107,17 @@ export function HeroText() {
 	const router = useRouter();
 
 	const { classes } = useStyles();
-	const { isConnecting } = useAccount({
+	const {
+		connector: activeConnector,
+		isConnected,
+		isConnecting,
+	} = useAccount({
 		onConnect({ isReconnected }) {
 			if (!isReconnected) router.push("/chat");
 		},
 	});
+	const { connect, connectors, error, isLoading, pendingConnector } =
+		useConnect();
 
 	return (
 		<Container className={classes.wrapper} size={1400}>
@@ -151,13 +158,20 @@ export function HeroText() {
 					>
 						Learn more
 					</Button>
-					<Button
-						className={classes.control}
-						size="lg"
-						loading={isConnecting}
-					>
-						Get started
-					</Button>
+					<ConnectKitButton.Custom>
+						{({ show }) => {
+							return (
+								<Button
+									className={classes.control}
+									size="lg"
+									loading={isConnecting}
+									onClick={show}
+								>
+									Get started
+								</Button>
+							);
+						}}
+					</ConnectKitButton.Custom>
 				</div>
 			</div>
 		</Container>
