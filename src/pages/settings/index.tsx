@@ -96,7 +96,7 @@ export default function Settings({
 				)}
 				{activeTab == "Profile" && (
 					(
-          <Profile signer={signer} profile={myProfile} signer={signer} />
+          <Profile signer={signer} profile={myProfile} />
 				)
         )}
 			</div>
