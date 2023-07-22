@@ -139,11 +139,8 @@ export const Protocols = ({
           );
         })}
       </div>
-      <p className="text-center text-white w-8/12 mx-auto">
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque eligendi
-        adipisci obcaecati quod dolor nihil ipsam dignissimos quasi, quia
-        pariatur. Eligendi, quaerat eveniet rem voluptas reiciendis maiores?
-        Quis, molestias iste?
+      <p className="text-center text-white w-6/12 mx-auto">
+        Setup your preferred messaging protocol. You can change this at any time. You can also use multiple protocols at once to receive and send messages from different protocols.
       </p>
     </div>
   );

@@ -50,3 +50,20 @@ export const isVerified = async (address) => {
   if (error) throw error;
   return data.length > 0;
 }
+
+export const updateWorldcoinFilter = async (address, worldcoinFilter) => {
+  const { data, error } = await supabase
+    .from("users")
+    .update({ worldcoinFilter })
+    .eq("address", address.toLowerCase());
+  if (error) throw error;
+}
+
+export const isWorldcoinFilter = async (address) => {
+  const { data, error } = await supabase
+    .from("users")
+    .select("worldcoinFilter")
+    .eq("address", address.toLowerCase());
+  if (error) throw error;
+  return data[0].worldcoinFilter;
+}

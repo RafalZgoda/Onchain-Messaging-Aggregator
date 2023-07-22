@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useAccount, useConnect } from "wagmi";
 import { useRouter } from "next/router";
 import { ConnectKitButton } from "connectkit";
+import Image from "next/image";
 
 const useStyles = createStyles((theme) => ({
 	wrapper: {
@@ -139,12 +140,13 @@ export function HeroText() {
 				</Title>
 
 				<Container p={0} size={600}>
+					
 					<Text
 						size="lg"
 						color="dimmed"
 						className={classes.description}
 					>
-						Never miss another message in the dark forest.
+						Never miss another message in the crypto seas.
 						<br></br>
 					</Text>
 				</Container>

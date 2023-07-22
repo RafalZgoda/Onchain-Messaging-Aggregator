@@ -5,6 +5,7 @@ import { TUserProfile, TXMTPClient } from "@/libs";
 import { Profile } from "./components/profile";
 import { providers } from "ethers";
 import { useRouter } from "next/router";
+import { Preferences } from "./components/preferences";
 
 export default function Settings({
   myProfile,
@@ -33,7 +34,7 @@ export default function Settings({
   return (
     <div className="w-full h-screen flex">
       <div className="w-2/12 bg-[#1F1F23] flex flex-col p-5">
-        <nav className="flex flex-col gap-5 text-white text-xl">
+        <nav className="flex flex-col gap-5 text-white text-md">
           <a
             onClick={() => setActiveTab("Profile")}
             className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${
@@ -114,6 +115,9 @@ export default function Settings({
         )}
         {activeTab == "Profile" && (
           <Profile profile={myProfile} signer={signer} />
+        )}
+        {activeTab == "Preferences" && (
+          <Preferences signer={signer}/>
         )}
       </div>
     </div>

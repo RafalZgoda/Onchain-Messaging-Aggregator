@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useEnsAvatar, useEnsName } from "wagmi";
 import { isVerified } from "@/libs/supabase";
-import EnsNameAvatar from "./EnsNameAvatar";
+import EnsNameAvatar from "./ENSNameAvatar";
 export const ChatCard = ({ conversation }: { conversation: TConversation }) => {
 	const {
 		data: ensName,

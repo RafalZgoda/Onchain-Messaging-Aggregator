@@ -21,7 +21,8 @@ import { Button, Input, Modal, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Checkbox } from "@mantine/core";
 import { useRouter } from "next/router";
-import EnsNameAvatar from "./components/EnsNameAvatar";
+import EnsNameAvatar from "./components/ENSNameAvatar";
+import { isVerified, isWorldcoinFilter, updateWorldcoinFilter } from "@/libs/supabase";
 
 export default function Chat({
   xmtp,
@@ -32,11 +33,19 @@ export default function Chat({
   signer: JsonRpcSigner;
   pushPGPKey: string;
 }) {
+  const [isWorldcoinFilterChecked, setIsWorldcoinFilterChecked] =
+    useState(false);
+
+  const updateWorldcoinFilter = async () => {
+    setIsWorldcoinFilterChecked(await isWorldcoinFilter(signer._address));
+  } 
+
   const router = useRouter();
   useEffect(() => {
     if (!signer) {
       router.push("/");
     }
+    updateWorldcoinFilter();
   }, [signer]);
 
   const [connversations, setConversations] = useState<TConversation[]>([]);
@@ -422,7 +431,7 @@ export default function Chat({
                       <Messages key={index} message={message} />
                     ))
                   ) : (
-                    <h2 className="text-center">Select a conversion</h2>
+                    <h2 className="text-center">Select a conversation</h2>
                   )}
                 </div>
                 <div className="flex p-1 bg-[#26282D] rounded-b-[30px] px-5 pb-3 pt-5">
