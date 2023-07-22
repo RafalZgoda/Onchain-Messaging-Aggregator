@@ -6,16 +6,30 @@ import {
   TXMTPConversation,
   sendMessageXMTP,
 } from "./xmtp";
+import {
+  getConversationFromNativeOnchain,
+  getAllConversationsFromNativeOnchain,
+} from "./native-onchain-message";
 export const getAggregatedConversations = async function ({
   xmtp_client,
+  address,
 }: {
   xmtp_client: TXMTPClient;
+  address: string;
 }): Promise<TConversation[]> {
+  console.log({ msg: "fetching conversations", address });
   const xmtp_conversations = await getConversationsListXMTP({ xmtp_client });
   const conversations = formatConversations({
     conversationsXMTP: xmtp_conversations,
   });
-  return conversations;
+
+  const native_conversations = await getAllConversationsFromNativeOnchain(
+    address
+  );
+
+  const allConversations = [...conversations, ...native_conversations];
+  console.log({ allConversations });
+  return allConversations;
 };
 
 const formatConversations = function ({

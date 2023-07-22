@@ -4,7 +4,7 @@ export type TMessage = {
   id: string;
   senderAddress: string;
   recipientAddress: string;
-  sent: Date;
+  sentAt: Date;
   content: string;
   platform: TMessagePlatform;
   me: boolean;
@@ -17,6 +17,7 @@ export type TConversation = {
   imgUrl: string;
   lastMessageDate: Date;
   conversation_xmtp?: TXMTPConversation;
+  owner?: string;
 };
 
 export type TMessagePlatform = {
@@ -36,9 +37,9 @@ export const MESSAGE_PLATFORMS = {
     name: "Push",
     imgUrl: "/img/push.png",
   } as TMessagePlatform,
-  vanilla: {
-    id: "vanilla",
-    name: "Vanilla",
+  native: {
+    id: "native",
+    name: "Native",
     imgUrl: "/img/eth.png",
   } as TMessagePlatform,
 };

@@ -81,7 +81,7 @@ export const formatMessagesXMTP = async function ({
       id: message.id,
       senderAddress: message.senderAddress,
       recipientAddress: message.recipientAddress || "",
-      sent: message.sent,
+      sentAt: message.sent,
       content: message.content.toString(),
       platform: MESSAGE_PLATFORMS.xmtp,
       me: message.senderAddress.toLowerCase() === userAddressLower,

@@ -35,7 +35,10 @@ function Chat({ client, messageHistory, conversation }) {
               {message.senderAddress === client.address ? "You" : "Bot"}:
             </strong>
             <span>{message.content}</span>
-            <span className="date"> ({message.sent.toLocaleTimeString()})</span>
+            <span className="date">
+              {" "}
+              ({message.sentAt.toLocaleTimeString()})
+            </span>
             <span className="eyes" onClick={() => console.log(message)}>
               👀
             </span>
@@ -54,11 +57,11 @@ function Chat({ client, messageHistory, conversation }) {
     }
   };
   return (
-    <div >
-      <div >
+    <div>
+      <div>
         <MessageList messages={messageHistory} />
       </div>
-      <div >
+      <div>
         <input
           type="text"
           onKeyPress={handleInputChange}
@@ -66,9 +69,7 @@ function Chat({ client, messageHistory, conversation }) {
           value={inputValue}
           placeholder="Type your text here "
         />
-        <button onClick={handleSend}>
-          &#128073;
-        </button>
+        <button onClick={handleSend}>&#128073;</button>
       </div>
     </div>
   );

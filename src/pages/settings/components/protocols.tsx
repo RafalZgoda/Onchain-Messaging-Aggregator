@@ -29,7 +29,7 @@ const Protocol = ({
     if (platform.name == MESSAGE_PLATFORMS.xmtp.name && xmtp) {
       setIsProtocolSet(true);
     }
-    if (platform.name == MESSAGE_PLATFORMS.vanilla.name) {
+    if (platform.name == MESSAGE_PLATFORMS.native.name) {
       setIsProtocolSet(true);
     }
   };
@@ -37,7 +37,7 @@ const Protocol = ({
   const handleSetPlatform = async (platform: TMessagePlatform) => {
     if (isProtocolSet) return;
     switch (platform.name) {
-      case MESSAGE_PLATFORMS.vanilla.name:
+      case MESSAGE_PLATFORMS.native.name:
         break;
       case MESSAGE_PLATFORMS.push.name:
         break;

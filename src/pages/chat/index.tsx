@@ -36,7 +36,7 @@ export default function Chat({
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    if (!xmtp || !signer)return
+    if (!xmtp || !signer) return;
     getConversations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xmtp, signer]);
@@ -89,8 +89,10 @@ export default function Chat({
   };
 
   const getConversations = async () => {
+    console.log({ signer });
     const conversations = await getAggregatedConversations({
       xmtp_client: xmtp,
+      address: await signer.getAddress(),
     });
     setConversations(conversations);
   };
