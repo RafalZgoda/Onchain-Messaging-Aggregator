@@ -7,8 +7,10 @@ export const Logo = () => {
 			<h1 className="font-bold text-white text-5xl text-center hover:cursor-pointer">
 				<Image
 					alt="S3ND"
-					src="img/logo.png"
+					src="/img/logo.png"
 					className="object-contain w-52 mt-[-25px]"
+					width={100}
+					height={100}
 				/>
 			</h1>
 		</Link>
