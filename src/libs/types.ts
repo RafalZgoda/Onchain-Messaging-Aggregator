@@ -17,6 +17,7 @@ export type TConversation = {
 	imgUrl: string;
 	lastMessageDate: Date;
 	conversation_xmtp?: TXMTPConversation;
+	ensNameTo?: string;
 };
 
 export type TMessagePlatform = {

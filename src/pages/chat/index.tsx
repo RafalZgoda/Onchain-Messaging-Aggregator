@@ -138,7 +138,7 @@ export default function Chat({
 			xmtp_client: xmtp,
 		});
 		conversations.forEach(async (conversation, i) => {
-			conversations[i].ensName = await publicClient.getEnsName({
+			conversations[i].ensNameTo = await publicClient.getEnsName({
 				address: conversation.addressTo,
 			});
 		});
@@ -259,7 +259,7 @@ export default function Chat({
 															conversation.addressTo.includes(
 																e.target.value
 															) ||
-															conversation.ensName?.includes(
+															conversation.ensNameTo.includes(
 																e.target.value
 															)
 													)
