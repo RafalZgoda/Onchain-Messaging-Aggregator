@@ -1,15 +1,11 @@
 import React, { Children } from "react";
-import Header from "components/Header";
-
-const HeaderLayout = () => {
-	return <Header />;
-};
+import HeaderAction from "./Header";
 
 const Layout = (props) => {
 	const { children } = props;
 	return (
 		<>
-			{ <HeaderLayout />}
+			<HeaderAction links={[]} />
 			{children}
 		</>
 	);
