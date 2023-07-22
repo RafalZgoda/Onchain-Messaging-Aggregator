@@ -137,6 +137,11 @@ export default function Chat({
 		const conversations = await getAggregatedConversations({
 			xmtp_client: xmtp,
 		});
+		conversations.forEach(async (conversation, i) => {
+			conversations[i].ensNameTo = await publicClient.getEnsName({
+				address: conversation.addressTo,
+			});
+		});
 		setConversations(conversations);
 	};
 
@@ -253,6 +258,9 @@ export default function Chat({
 														(conversation) =>
 															conversation.addressTo.includes(
 																e.target.value
+															) ||
+															conversation.ensNameTo.includes(
+																e.target.value
 															)
 													)
 												);
@@ -320,41 +328,43 @@ export default function Chat({
 							<div className="flex flex-col justify-between col-span-2 m-5">
 								<div className="flex items-center justify-between px-5 pt-3 bg-[#26282D] rounded-t-[30px] border-b">
 									{activeConversation?.addressTo && (
-										<EnsNameAvatar
-											address={
-												activeConversation?.addressTo
-											}
-											subtext={`Last message ${
-												new Date().toDateString() ===
-												activeConversation?.lastMessageDate.toDateString()
-													? activeConversation?.lastMessageDate.toLocaleTimeString()
-													: activeConversation?.lastMessageDate.toLocaleDateString()
-											}`}
-										/>
-									)}
-
-									<div className="w-40 text-telegram-gray-100 flex justify-end">
-										<button
-											className="border-none bg-transparent cursor-pointer items-center"
-											onClick={() => {
-												setPlatformsFilterVisibility(
-													!platformsFilterVisibility
-												);
-											}}
-										>
-											<SvgGenerator // logo params
-												path="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-												className="w-5 h-5"
+										<>
+											<EnsNameAvatar
+												address={
+													activeConversation?.addressTo
+												}
+												subtext={`Last message ${
+													new Date().toDateString() ===
+													activeConversation?.lastMessageDate.toDateString()
+														? activeConversation?.lastMessageDate.toLocaleTimeString()
+														: activeConversation?.lastMessageDate.toLocaleDateString()
+												}`}
 											/>
-										</button>
 
-										{/* <MultiSelect
+											<div className="w-40 text-telegram-gray-100 flex justify-end">
+												<button
+													className="border-none bg-transparent cursor-pointer items-center"
+													onClick={() => {
+														setPlatformsFilterVisibility(
+															!platformsFilterVisibility
+														);
+													}}
+												>
+													<SvgGenerator // logo params
+														path="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+														className="w-5 h-5"
+													/>
+												</button>
+
+												{/* <MultiSelect
                       className="w-[200px]"
                         data={defaultFilters}
                          value={filters} onChange={setFilters}
                         placeholder="Protocol Filter"
                       /> */}
-									</div>
+											</div>
+										</>
+									)}
 								</div>
 
 								{platformsFilterVisibility && (
@@ -402,48 +412,70 @@ export default function Chat({
 									</div>
 								)}
 
-								<div className="relative pb-3 w-full h-full overflow-y-scroll flex justify-end flex-col bg-[#26282D] px-8 gap-2">
-									{filteredMessages.map((message, index) => (
-										<Messages
-											key={index}
-											message={message}
-										/>
-									))}
+								<div
+									className={`relative pb-3 w-full h-full overflow-y-scroll flex justify-${
+										activeConversation?.addressTo
+											? "end"
+											: "center"
+									} flex-col bg-[#26282D] px-8 gap-2`}
+								>
+									{activeConversation?.addressTo ? (
+										filteredMessages.map(
+											(message, index) => (
+												<Messages
+													key={index}
+													message={message}
+												/>
+											)
+										)
+									) : (
+										<h2 className="text-center">
+											Select a conversion
+										</h2>
+									)}
 								</div>
 								<div className="flex p-1 bg-[#26282D] rounded-b-[30px] px-5 pb-3 pt-5">
-									<input
-										type="text"
-										placeholder="Write a message..."
-										className="w-full text-white text-xs p-2.5 rounded-md outline-none bg-[#3F4249] border-none mx-5"
-										value={inputValue}
-										onChange={(e) =>
-											setInputValue(e.target.value)
-										}
-										onKeyDown={(e) => {
-											if (e.key === "Enter") {
-												handleSendMessage();
-											}
-										}}
-									/>
-									<button
-										onClick={() => handleSendMessage()}
-										className="bg-[#3C8AFF] border-none rounded-[100px] h-8 cursor-pointer"
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-											strokeWidth="1.5"
-											stroke="currentColor"
-											className="w-6 h-6 mt-[2px]"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+									{activeConversation?.addressTo && (
+										<>
+											<input
+												type="text"
+												placeholder="Write a message..."
+												className="w-full text-white text-xs p-2.5 rounded-md outline-none bg-[#3F4249] border-none mx-5"
+												value={inputValue}
+												onChange={(e) =>
+													setInputValue(
+														e.target.value
+													)
+												}
+												onKeyDown={(e) => {
+													if (e.key === "Enter") {
+														handleSendMessage();
+													}
+												}}
 											/>
-										</svg>
-									</button>
+											<button
+												onClick={() =>
+													handleSendMessage()
+												}
+												className="bg-[#3C8AFF] border-none rounded-[100px] h-8 cursor-pointer"
+											>
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
+													strokeWidth="1.5"
+													stroke="currentColor"
+													className="w-6 h-6 mt-[2px]"
+												>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+													/>
+												</svg>
+											</button>
+										</>
+									)}
 								</div>
 							</div>
 						</div>
