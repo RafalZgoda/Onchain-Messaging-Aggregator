@@ -1,5 +1,5 @@
+import { verifyUser } from "@/libs/supabase";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { updateBadges } from "../../libs/supabase/index";
 
 export type VerifyReply = {
   code: string;
@@ -15,7 +15,7 @@ export default function handler(
     nullifier_hash: req.body.nullifier_hash,
     proof: req.body.proof,
     credential_type: req.body.credential_type,
-    action: req.body.action, // or get this from environment variables,
+    action: "vote_1",
     signal: req.body.signal ?? "", // if we don't have a signal, use the empty string
   };
   fetch(
@@ -32,18 +32,13 @@ export default function handler(
       if (verifyRes.status == 200) {
         // this is where you should perform backend actions based on the verified credential
         // i.e. setting a user as "verified" in a database
-        console.log({ wldResponse });
-        // const supabaseResponse = await updateBadges("signer", {
-        //   isVerifiedWorldcoin: true,
-        // });
-        // console.log({ supabaseResponse });
+        console.log(JSON.stringify(req.body))
+        const supabaseResponse = await verifyUser(req.body.address);
         res.status(verifyRes.status).send({ code: "success" });
       } else {
         // return the error code and detail from the World ID /verify endpoint to our frontend
         res.status(verifyRes.status).send({
-          code: wldResponse.code,
-          detail: wldResponse.detail,
-        });
+          ...wldResponse});
       }
     });
   });

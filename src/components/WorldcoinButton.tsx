@@ -1,16 +1,18 @@
 import { CredentialType, IDKitWidget } from "@worldcoin/idkit";
 import axios from "axios";
 
+let address = null;
+
 const onSuccess = async (response: any) => {
   console.log({ response });
 };
 
 const handleVerify = async (response: any) => {
-  console.log({ response });
-  await axios.post("/api/worldcoin-verify", response);
+  await axios.post("/api/worldcoin-verify", { ...response, address });
 };
 
-export default function WorldcoinButton({ signer: any }) {
+export default function WorldcoinButton({ signer }) {
+  address = signer._address;
   return (
     <>
       <div>
@@ -22,7 +24,14 @@ export default function WorldcoinButton({ signer: any }) {
           credential_types={[CredentialType.Orb, CredentialType.Phone]} // optional, defaults to ['orb']
           enableTelemetry // optional, defaults to false
         >
-          {({ open }) => <button className="cursor-pointer border-none px-5 py-2 rounded-md w-fit mx-auto bg-black hover:opacity-90 hover:bg-black transition" onClick={open}>Verify with World ID</button>}
+          {({ open }) => (
+            <button
+              className="cursor-pointer border-none px-5 py-2 rounded-md w-fit mx-auto bg-black hover:opacity-90 hover:bg-black transition"
+              onClick={open}
+            >
+              Verify with World ID
+            </button>
+          )}
         </IDKitWidget>
         ;
       </div>
