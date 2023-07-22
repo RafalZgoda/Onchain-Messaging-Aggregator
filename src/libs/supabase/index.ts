@@ -31,12 +31,22 @@ export const setLastSeen = async (lastSeenHash, owner, recipient) => {
   return data;
 };
 
-export const updateBadges = async (owner, badges) => {
-  // isVerifiedWorldcoin
+export const verifyUser = async (address) => {
   const { data, error } = await supabase
-    .from("conversations")
-    .update({ ...badges })
-    .eq("owner", owner);
+    .from("users")
+    .insert({
+      address: address.toLowerCase(),
+      isVerifiedWorldcoin: true
+    })
   if (error) throw error;
   return data;
 };
+
+export const isVerified = async (address) => {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("address", address.toLowerCase());
+  if (error) throw error;
+  return data.length > 0;
+}

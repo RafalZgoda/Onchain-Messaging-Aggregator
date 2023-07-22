@@ -1,34 +1,29 @@
-import { TMessage } from "libs";
+import { TMessage } from "@/libs";
 import Image from "next/image";
 const Messages = ({ message }: { message: TMessage }) => {
-  return (
-    <div
-      className={`text-white text-${
-        message.me ? "right" : "left"
-      } m-2.5  text-s`}
-    >
-      <div
-        className={`bg-telegram-${
-          message.me ? "gray-300" : "gray-200"
-        } relative inline p-1.5 pl-2.5 pr-12 rounded-md text-white`}
-      >
-        {message.content}
-        <span className="text-xs right-1 bottom-0 absolute opacity-60">
-          {message.sentAt.toDateString()} ✓
-        </span>
-        <span className="text-xs right-1 bottom-0 absolute opacity-60">
-          {message.platform.name}
-          <Image
-            src={message.platform.imgUrl}
-            alt={message.platform.name}
-            className="rounded-full w-15"
-            width={20}
-            height={20}
-          />
-        </span>
-      </div>
-    </div>
-  );
+	return (
+		<div className="relative">
+			<div
+				className={`py-2 px-3 rounded-md text-white ${
+					message.me ? "ml-auto" : "mr-auto"
+				} right-0 m-2.5 text-s ${
+					message.me ? "bg-[#35506f]" : "bg-[#3a4047]"
+				} w-fit`}
+			>
+				{message.content}
+			</div>
+
+			<span
+				className={`bottom-[-8px] absolute text-xs ${
+					message.me ? "right-2" : "left-3"
+				}`}
+			>
+				{new Date().toDateString() === message.sentAt.toDateString()
+					? message.sentAt.toLocaleTimeString()
+					: message.sentAt.toLocaleDateString()}
+			</span>
+		</div>
+	);
 };
 
 export default Messages;
