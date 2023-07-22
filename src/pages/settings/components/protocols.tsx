@@ -30,13 +30,14 @@ const Protocol = ({
 
   useEffect(() => {
     updateSetProtocol();
-  }, [platform.name, xmtp, pushPGPKey]);
+  }, [platform.name, xmtp, pushPGPKey, signer]);
 
   const updateSetProtocol = () => {
+    if (!signer) setIsProtocolSet(false);
     if (platform.name == MESSAGE_PLATFORMS.xmtp.name && xmtp) {
       setIsProtocolSet(true);
     }
-    if (platform.name == MESSAGE_PLATFORMS.native.name) {
+    if (platform.name == MESSAGE_PLATFORMS.native.name && signer) {
       setIsProtocolSet(true);
     }
     if (platform.name == MESSAGE_PLATFORMS.push.name && pushPGPKey) {
@@ -122,28 +123,28 @@ export const Protocols = ({
   setPushPGPKey: any;
 }) => {
   return (
-    <div>
-      <div className="flex p-10 justify-center gap-32">
-        {MESSAGE_PLATFORMS_ARRAY.map((platform, index) => {
-          return (
-            <Protocol
-              key={index}
-              platform={platform}
-              setXmtp={setXmtp}
-              signer={signer}
-              xmtp={xmtp}
-              pushPGPKey={pushPGPKey}
-              setPushPGPKey={setPushPGPKey}
-            />
-          );
-        })}
-      </div>
-      <p className="text-center text-white w-8/12 mx-auto">
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque eligendi
-        adipisci obcaecati quod dolor nihil ipsam dignissimos quasi, quia
-        pariatur. Eligendi, quaerat eveniet rem voluptas reiciendis maiores?
-        Quis, molestias iste?
-      </p>
+    <div className="flex justify-center items-center h-full">
+      {signer ? (
+        <div className="flex p-10 justify-center gap-32">
+          {MESSAGE_PLATFORMS_ARRAY.map((platform, index) => {
+            return (
+              <Protocol
+                key={index}
+                platform={platform}
+                setXmtp={setXmtp}
+                signer={signer}
+                xmtp={xmtp}
+                pushPGPKey={pushPGPKey}
+                setPushPGPKey={setPushPGPKey}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <p className="text-center text-white w-8/12 mx-auto">
+          Please connect your wallet to see protocols
+        </p>
+      )}
     </div>
   );
 };

@@ -11,13 +11,16 @@ import {
   getAllConversationsPush,
   getRequestsPush,
   getMessagesPush,
+  sendMessagePush,
+  approveRequestPush,
 } from "./push";
 import * as PushAPI from "@pushprotocol/restapi";
+import { Signer } from "ethers";
 
-import {
-  getAllConversationsFromNativeOnchain,
-  getMessagesFromNativeOnchain,
-} from "./native-onchain-message";
+// import {
+//   getAllConversationsFromNativeOnchain,
+//   getMessagesFromNativeOnchain,
+// } from "./native-onchain-message";
 export const getAggregatedConversations = async function ({
   xmtp_client,
   pgpPrivateKey,
@@ -27,7 +30,6 @@ export const getAggregatedConversations = async function ({
   pgpPrivateKey: string;
   userAddress: string;
 }): Promise<TConversation[]> {
-  console.log({ msg: "fetching conversations", userAddress });
   const xmtp_conversations = await getConversationsListXMTP({ xmtp_client });
   const push_conversations = await getAllConversationsPush({
     address: userAddress,
@@ -37,32 +39,29 @@ export const getAggregatedConversations = async function ({
     address: userAddress,
     pgpPrivateKey,
   });
-  const native_conversations = await getAllConversationsFromNativeOnchain(
-    userAddress
-  );
+  // const native_conversations = await getAllConversationsFromNativeOnchain(
+  //   userAddress
+  // );
 
   const conversations = mergeConversations({
     conversationsXMTP: xmtp_conversations,
     conversationsPush: push_conversations,
     requestsPush: push_requests,
-    nativeConversations: native_conversations,
+    //nativeConversations: native_conversations,
   });
 
-  const allConversations = [...conversations, ...native_conversations];
-
-  return allConversations;
+  return conversations;
 };
 
 const mergeConversations = function ({
   conversationsXMTP,
   conversationsPush,
-  requestsPush,
-  nativeConversations,
+  requestsPush, //nativeConversations,
 }: {
   conversationsXMTP: TConversation[];
   conversationsPush: TConversation[];
   requestsPush: TConversation[];
-  nativeConversations: TConversation[];
+  //nativeConversations: TConversation[];
 }) {
   // Define an empty map to hold the merged conversations
   const mergedConversations = new Map();
@@ -94,14 +93,14 @@ const mergeConversations = function ({
     });
   }
 
-  // Process Native conversations
-  for (const conversation of nativeConversations) {
-    mergedConversations.set(conversation.addressTo.toLowerCase(), {
-      ...mergedConversations.get(conversation.addressTo.toLowerCase()),
-      conversation_native: conversation.conversation_native,
-      addressTo: conversation.addressTo,
-    });
-  }
+  // // Process Native conversations
+  // for (const conversation of nativeConversations) {
+  //   mergedConversations.set(conversation.addressTo.toLowerCase(), {
+  //     ...mergedConversations.get(conversation.addressTo.toLowerCase()),
+  //     conversation_native: conversation.conversation_native,
+  //     addressTo: conversation.addressTo,
+  //   });
+  // }
 
   // Convert the map values to an array and return it
   return Array.from(mergedConversations.values());
@@ -131,27 +130,29 @@ export const getAggregatedMessages = async function ({
     });
     messages = [...messages, ...xmtp_messages];
   }
-
   if (conversation_push || conversation_push_request) {
     const valid_conversation_push = conversation_push
       ? conversation_push
       : conversation_push_request;
     const push_messages = await getMessagesPush({
-      address: valid_conversation_push.wallets.split(":")[1],
+      address: otherAddress,
       threadhash: valid_conversation_push.threadhash,
       pgpPrivateKey,
       userAddress,
     });
+    console.log({
+      lastNewPushMessage: push_messages[0],
+    });
     messages = [...messages, ...push_messages];
   }
 
-  if (userAddress && otherAddress) {
-    const onchainMessages = await getMessagesFromNativeOnchain(
-      userAddress,
-      otherAddress
-    );
-    messages = [...messages, ...onchainMessages];
-  }
+  // if (userAddress && otherAddress) {
+  //   const onchainMessages = await getMessagesFromNativeOnchain(
+  //     userAddress,
+  //     otherAddress
+  //   );
+  //   messages = [...messages, ...onchainMessages];
+  // }
 
   return messages;
 };
@@ -159,12 +160,39 @@ export const getAggregatedMessages = async function ({
 export const sendAggregatedMessage = async function ({
   conversation_xmtp,
   message,
+  pgpPrivateKey,
+  signer,
+  otherAddress,
+  conversation_push_request,
+  userAddress,
 }: {
   conversation_xmtp?: TXMTPConversation;
   message: string;
+  pgpPrivateKey: string;
+  signer: Signer;
+  otherAddress: string;
+  conversation_push_request?: PushAPI.IFeeds;
+  userAddress: string;
 }): Promise<void> {
+  if (!message) return;
   if (conversation_xmtp) {
     await sendMessageXMTP({ conversation: conversation_xmtp, message });
+  }
+  if (signer && otherAddress && pgpPrivateKey) {
+    if (conversation_push_request) {
+      await approveRequestPush({
+        pgpPrivateKey,
+        signer,
+        to: otherAddress,
+        userAddress,
+      });
+    }
+    await sendMessagePush({
+      to: otherAddress,
+      message,
+      pgpPrivateKey,
+      signer,
+    });
   }
 };
 

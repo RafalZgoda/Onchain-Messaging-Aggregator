@@ -92,13 +92,22 @@ export const getMessagesPush = async ({
   userAddress: string;
 }): Promise<TMessage[]> => {
   const userAddressLower = userAddress.toLowerCase();
-  const response = await PushAPI.chat.history({
+  console.log("1");
+  console.log({
     threadhash,
     pgpPrivateKey,
     account: `eip155:${address}`,
     toDecrypt: true,
     env: ENV.PROD,
+  })
+  const response = await PushAPI.chat.history({
+    threadhash,
+    pgpPrivateKey,
+    account: `eip155:${userAddressLower}`,
+    toDecrypt: true,
+    env: ENV.PROD,
   });
+  console.log("2");
   return response.map((message) => {
     const value = JSON.stringify(message);
     const bytesValue = ethers.utils.toUtf8Bytes(value);
@@ -129,6 +138,7 @@ export const sendMessagePush = async ({
   signer: Signer;
   pgpPrivateKey: string;
 }) => {
+  console.log("sending to", to);
   return await PushAPI.chat.send({
     messageContent: message,
     messageType: "Text", // can be "Text" | "Image" | "File" | "GIF"
@@ -160,12 +170,12 @@ export const getRequestsPush = async ({
 };
 
 export const approveRequestPush = async ({
-  from,
+  to,
   userAddress,
   signer,
   pgpPrivateKey,
 }: {
-  from: string;
+  to: string;
   userAddress: string;
   signer: Signer;
   pgpPrivateKey: string;
@@ -173,7 +183,7 @@ export const approveRequestPush = async ({
   await PushAPI.chat.approve({
     status: "Approved",
     account: userAddress,
-    senderAddress: from,
+    senderAddress: to,
     env: ENV.PROD,
     pgpPrivateKey,
     signer,

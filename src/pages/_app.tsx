@@ -37,7 +37,6 @@ function MyApp({ Component, pageProps }) {
   );
 
   const getProfile = async () => {
-    console.log("getting profile");
     const profile = await getUserOnChainData(
       await signer.getAddress(),
       Platform.ethereum
@@ -54,6 +53,8 @@ function MyApp({ Component, pageProps }) {
     updateSigner();
     if (!wallet) {
       emptyMessagingClient();
+      localStorage.removeItem("xmtp");
+      localStorage.removeItem("pushPGPKey");
     }
   }, [wallet]);
 
@@ -64,7 +65,9 @@ function MyApp({ Component, pageProps }) {
   }, [signer]);
 
   const emptyMessagingClient = () => {
+    console.log("emptying messaging client");
     setXmtp(null);
+    setPushPGPKey("");
   };
 
   // check if local storage has xmtp

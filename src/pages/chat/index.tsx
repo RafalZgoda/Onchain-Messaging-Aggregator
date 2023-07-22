@@ -68,9 +68,14 @@ export default function Chat({
     await sendAggregatedMessage({
       conversation_xmtp: activeConversation.conversation_xmtp,
       message: inputValue,
+      signer,
+      pgpPrivateKey: pushPGPKey,
+      otherAddress: activeConversation.addressTo,
+      userAddress: await signer.getAddress(),
+      conversation_push_request: activeConversation.conversation_push_request,
     });
     setInputValue("");
-    await getMessages();
+    await refreshConversations();
   };
 
   const handleSendNewMessage = async () => {
@@ -93,16 +98,14 @@ export default function Chat({
   }, [messages, platformsFilter]);
 
   useEffect(() => {
-    if ( !activeConversation || !signer) return;
+    if (!activeConversation || !signer) return;
     getMessages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xmtp, activeConversation, signer, pushPGPKey]);
 
   const getMessages = async () => {
-    console.log(activeConversation);
     if (!activeConversation) return;
     const userAddress = await signer.getAddress();
-    console.log("getting messages");
     const messages = await getAggregatedMessages({
       conversation_xmtp: activeConversation?.conversation_xmtp,
       userAddress,
@@ -115,29 +118,62 @@ export default function Chat({
   };
 
   const getConversations = async () => {
-    console.log("getting conversations");
     const conversations = await getAggregatedConversations({
       xmtp_client: xmtp,
       pgpPrivateKey: pushPGPKey,
       userAddress: await signer.getAddress(),
     });
-    console.log({conversations});
+    if (activeConversation) {
+      const activeConversationInNewConversations = conversations.find(
+        (conversation) =>
+          conversation.addressTo === activeConversation.addressTo
+      );
+      if (activeConversationInNewConversations) {
+        setActiveConversation(activeConversationInNewConversations);
+      }
+    }
     setConversations(conversations);
   };
 
   const refreshConversations = async () => {
+    const newActiveConversation = connversations.find(
+      (conversation) => conversation.addressTo === activeConversation.addressTo
+    );
+    setActiveConversation(newActiveConversation);
     await getConversations();
     await getMessages();
   };
+  const [inter, setInter] = useState(null);
+  // useEffect(() => {
+  //   if (!signer || inter) return;
+  //   const interval = setInterval(async () => {
+  //     await refreshConversations();
+  //   }, 10000);
+  //   setInter(interval);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
+  // useEffect(() => {
+  //   if (!signer) return;
+
+  //   const refresh = async () => {
+  //     await refreshConversations();
+  //     setTimeout(refresh, 10000);
+  //   };
+
+  //   refresh();
+
+  //   // Cleanup logic remains same
+  // }, []);
+
+  // set interval which click on refresh button (using id) every 10 seconds
   useEffect(() => {
     if (!signer) return;
-    const interval = setInterval(async () => {
-      await refreshConversations();
-    }, 10000);
+    const interval = setInterval(() => {
+      document.getElementById("refreshBtn").click();
+    }, 5000);
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xmtp, signer, activeConversation]);
+  }, []);
 
   const SvgGenerator = (props) => {
     const { path, className } = props;
@@ -213,6 +249,12 @@ export default function Chat({
                       onClick={() => setNewMessageModalVisibility(true)}
                     >
                       New Message
+                    </button>
+                    <button
+                      id="refreshBtn"
+                      onClick={() => refreshConversations()}
+                    >
+                      Refresh
                     </button>
                   </div>
                 </div>
