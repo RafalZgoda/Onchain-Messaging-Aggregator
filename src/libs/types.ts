@@ -6,14 +6,14 @@ export type TMessage = {
   recipientAddress: string;
   sent: Date;
   content: string;
-  platform: string;
+  platform: TMessagePlatform;
   me: boolean;
 };
 
 export type TConversation = {
   id: string;
   addressTo: string;
-  platform: string;
+  platform: TMessagePlatform;
   imgUrl: string;
   lastMessageDate: Date;
   conversation_xmtp?: TXMTPConversation;
@@ -22,23 +22,23 @@ export type TConversation = {
 export type TMessagePlatform = {
   id: string;
   name: string;
-  urlLogo: string;
+  imgUrl: string;
 };
 
-const platforms = {
+export const MESSAGE_PLATFORMS = {
   xmtp: {
     id: "xmtp",
     name: "XMTP",
-    urlLogo: "https://i.pravatar.cc/45?img=11",
-  },
+    imgUrl: "https://i.pravatar.cc/45?img=11",
+  } as TMessagePlatform,
   push: {
     id: "push",
     name: "Push",
-    urlLogo: "https://i.pravatar.cc/45?img=12",
-  },
+    imgUrl: "https://i.pravatar.cc/45?img=12",
+  } as TMessagePlatform,
   tx: {
     id: "tx",
     name: "TX",
-    urlLogo: "https://i.pravatar.cc/45?img=13",
-  },
-};
+    imgUrl: "https://i.pravatar.cc/45?img=13",
+  } as TMessagePlatform,
+}

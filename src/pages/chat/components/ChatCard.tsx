@@ -8,8 +8,8 @@ export const ChatCard = ({ conversation }: { conversation: TConversation }) => {
           src={conversation.imgUrl}
           alt={conversation.addressTo}
           className="rounded-full w-15"
-		  width={50}
-		  height={50}
+          width={50}
+          height={50}
         />
       </div>
       <div className="col-span-4">
