@@ -1,8 +1,12 @@
+import { Loader, LoadingOverlay } from "@mantine/core";
 import { TUserProfile } from "libs";
 
 export const Profile = ({ profile }: { profile: TUserProfile }) => {
   return (
     <div className="p-10">
+      {!profile && <Loader className="block mt-20 mx-auto" /> }
+      {profile && (
+        
       <div className="bg-[#38383fb7] w-fit px-10 py-5 flex rounded-[50px] items-center">
         <img src="img/eth.png" className="w-16 mr-3 object-contain"></img>
         <div>
@@ -28,7 +32,7 @@ export const Profile = ({ profile }: { profile: TUserProfile }) => {
           </h1>
           <p className="m-0 p-0">{profile?.identity}</p>
         </div>
-      </div>
+      </div>)}
       {profile?.neighbors.map((neighbor) => {
         return (
           <div className="bg-[#38383fb7] w-6/12 px-10 py-5 flex rounded-[50px]">
