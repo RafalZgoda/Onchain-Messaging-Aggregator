@@ -1,5 +1,5 @@
 import { truncateHash } from "@/libs/utils";
-import { TConversation } from "libs";
+import { TConversation } from "@/libs";
 import Image from "next/image";
 import { useEnsAvatar, useEnsName } from "wagmi";
 export const ChatCard = ({ conversation }: { conversation: TConversation }) => {

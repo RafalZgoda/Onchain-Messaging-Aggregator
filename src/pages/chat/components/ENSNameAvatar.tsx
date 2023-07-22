@@ -1,4 +1,4 @@
-import { truncateHash } from "@/libs/utils";
+import { truncateHash } from "@/libs/utils/truncate-hash";
 import { useEnsAvatar, useEnsName } from "wagmi";
 
 export default function EnsNameAvatar({

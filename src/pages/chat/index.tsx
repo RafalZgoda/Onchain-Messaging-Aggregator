@@ -1,6 +1,5 @@
 import ChatCard from "./components/ChatCard";
 import Messages from "./components/Messages";
-import { MultiSelect } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Loader } from "@mantine/core";
 import React from "react";
@@ -14,13 +13,14 @@ import {
 	MESSAGE_PLATFORMS_ARRAY,
 	sendAggregatedMessage,
 	sendAggregatedNewMessage,
-} from "libs";
+} from "@/libs";
 
 import { JsonRpcSigner } from "@ethersproject/providers";
-import EnsNameAvatar from "./components/ENSNameAvatar";
+import EnsNameAvatar from "./components/EnsNameAvatar";
 import { Button, Input, Modal, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Checkbox } from "@mantine/core";
+import { getPublicClient } from "@wagmi/core";
 
 const defaultFilters = ["push", "xmtp", "vanilla"];
 
@@ -31,6 +31,10 @@ export default function Chat({
 	xmtp: TXMTPClient;
 	signer: JsonRpcSigner;
 }) {
+	const publicClient = getPublicClient({
+		chainId: 1,
+	});
+
 	const [connversations, setConversations] = useState<TConversation[]>([]);
 	const [activeConversation, setActiveConversation] =
 		useState<TConversation>(null);
