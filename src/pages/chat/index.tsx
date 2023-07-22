@@ -146,9 +146,9 @@ export default function Chat({
 
   return (
     <>
-      <div className="h-screen relative">
+      <div className="h-[calc(100vh-60px)]">
         {newMessageModalVisibility && (
-          <div className="absolute z-10 w-full h-full bg-black/70 flex justify-center items-center">
+          <div className="absolute z-10 w-full bg-black/70 flex justify-center items-center">
             <div className="bg-white/10 w-[34rem] h-[24rem] flex-row">
               <p>New mesage:</p>
               <input
