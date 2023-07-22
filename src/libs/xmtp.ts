@@ -51,8 +51,8 @@ export const sendMessageXMTP = async function ({
   conversation,
   message,
 }: {
-  conversation: any;
-  message: TXMTPConversation;
+  conversation: TXMTPConversation;
+  message: string;
 }): Promise<void> {
   await conversation.send(message);
 };
