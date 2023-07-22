@@ -9,6 +9,7 @@ export type TNeighbor = {
 
 export type TUserProfile = {
     ENS: string | null;
+    identity: string;
     neighbors : TNeighbor[]
 }
 
@@ -85,6 +86,7 @@ export const getUserOnChainData = async (identity: string, platform: Platform) :
 
     const userProfile: TUserProfile = {
         ENS: response.data.identity.displayName,
+        identity,
         neighbors: neighbors
     }
     return userProfile

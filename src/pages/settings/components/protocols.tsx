@@ -15,7 +15,7 @@ const Protocol = ({ img, title }: { img: string; title: string }) => {
     <div className="w-64      rounded flex flex-col p-10 items-center justify-end">
       <img src={"img/" + img} className="w-32" />
       <h1 className="font-bold mt-3 text-xl text-white">{title}</h1>
-      <button className="bg-[#3C8AFF] text-white px-5 py-1 mt-10  rounded-lg">
+      <button className="border-none bg-[#3C8AFF] text-white px-5 py-2 mt-10  rounded-lg">
         {getButtonText()}
       </button>
     </div>

@@ -1,16 +1,15 @@
 import "../../styles/globals.css";
 import Head from "next/head";
-import Layout from "@/components/Layout";
 import { MantineProvider } from "@mantine/core";
 import { WagmiConfig, createConfig } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { useEffect, useState } from "react";
-import { NavigationProgress } from "@mantine/nprogress";
-import { RouterTransition } from "@/components/RouterTransition";
 import { type WalletClient } from "@wagmi/core";
 import { watchWalletClient } from "@wagmi/core";
 import { Platform, getEthersSigner, getUserOnChainData } from "libs";
 import { providers } from "ethers";
+import Layout from "@/components/Layout";
+import { RouterTransition } from "@/components/RouterTransition";
 const config = createConfig(
   getDefaultConfig({
     appName: "Message aggregator",
@@ -37,10 +36,12 @@ function MyApp({ Component, pageProps }) {
   );
 
   const getProfile = async () => {
+    console.log("getting profile")
     const profile = await getUserOnChainData(
       await signer.getAddress(),
       Platform.ethereum
     );
+    console.log(profile);
     setMyProfile(profile);
   };
 
@@ -54,10 +55,13 @@ function MyApp({ Component, pageProps }) {
     if (!wallet) {
       emptyMessagingClient();
     }
+  }, [wallet]);
+
+  useEffect(() => {
     if (signer) {
       getProfile();
     }
-  }, [wallet]);
+  }, [signer]);
 
   const emptyMessagingClient = () => {
     setXmtp(null);
@@ -95,6 +99,7 @@ function MyApp({ Component, pageProps }) {
             />
           }
         </Layout>
+        </MantineProvider>
       </ConnectKitProvider>
     </WagmiConfig>
   );

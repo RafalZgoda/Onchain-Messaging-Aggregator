@@ -11,8 +11,7 @@ export default function Settings({ myProfile }: { myProfile: TUserProfile }) {
   return (
     <div className="w-full h-screen flex">
       <div className="w-2/12 bg-[#1F1F23] flex flex-col p-5">
-        <Logo />
-        <nav className="flex flex-col gap-5 mt-10 text-white text-xl">
+        <nav className="flex flex-col gap-5 text-white text-xl">
           <a
             onClick={() => setActiveTab("Profile")}
             className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${
