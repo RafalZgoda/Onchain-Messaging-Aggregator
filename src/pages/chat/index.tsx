@@ -11,10 +11,10 @@ import {
   TMessagePlatform,
   MESSAGE_PLATFORMS_ARRAY,
   sendAggregatedMessage,
+  sendAggregatedNewMessage,
 } from "libs";
-import Router from "next/router";
+
 import { JsonRpcSigner } from "@ethersproject/providers";
-import { useAccount } from "wagmi";
 
 export default function Chat({
   xmtp,
@@ -34,9 +34,12 @@ export default function Chat({
   const [platformsFilterVisibility, setPlatformsFilterVisibility] =
     useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [newMessageModalVisibility, setNewMessageModalVisibility] =
+    useState(false);
+  const [newMessageAddress, setNewMessageAddress] = useState("");
 
   useEffect(() => {
-    if (!xmtp || !signer)return
+    if (!xmtp || !signer) return;
     getConversations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xmtp, signer]);
@@ -62,6 +65,17 @@ export default function Chat({
     });
     setInputValue("");
     await getMessages();
+  };
+
+  const handleSendNewMessage = async () => {
+    await sendAggregatedNewMessage({
+      addressTo: newMessageAddress,
+      message: inputValue,
+      xmtp_client: xmtp,
+    });
+    setInputValue("");
+    await refreshConversations();
+    setNewMessageModalVisibility(false);
   };
 
   useEffect(() => {
@@ -129,10 +143,40 @@ export default function Chat({
 
   return (
     <>
-      <div className="h-screen">
+      <div className="h-screen relative">
+        {newMessageModalVisibility && (
+          <div className="absolute z-10 w-full h-full bg-black/70 flex justify-center items-center">
+            <div className="bg-white/10 w-[34rem] h-[24rem] flex-row">
+              <p>New mesage:</p>
+              <input
+                type="text"
+                placeholder="Address"
+                onChange={(e) => setNewMessageAddress(e.target.value)}
+                className="w-full text-white text-xs p-2.5 rounded-sm outline-none bg-telegram-gray-200"
+              />
+              <input
+                type="text"
+                placeholder="Message"
+                onChange={(e) => setInputValue(e.target.value)}
+                className="w-full text-white text-xs p-2.5 rounded-sm outline-none bg-telegram-gray-200"
+              />
+              <button
+                className="cursor-pointer"
+                onClick={() => setNewMessageModalVisibility(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="cursor-pointer"
+                onClick={() => handleSendNewMessage()}
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        )}
         <main className="flex h-full">
           <div className="w-full h-full rounded-md bg-telegram-gray-300 shadow-lg shadow-gray-800 ">
-            <header></header>
             <div className="grid grid-cols-3 h-full">
               <div className="col-span-1 overflow-hidden">
                 <div className="flex items-center bg-telegram-gray-300 pl-2">
@@ -148,6 +192,12 @@ export default function Chat({
                       placeholder="Search"
                       className="w-full text-white text-xs p-2.5 rounded-sm outline-none bg-telegram-gray-200"
                     />
+                    <button
+                      className="cursor-pointer"
+                      onClick={() => setNewMessageModalVisibility(true)}
+                    >
+                      New Message
+                    </button>
                   </div>
                 </div>
                 <div className="overflow-y-scroll h-full">
