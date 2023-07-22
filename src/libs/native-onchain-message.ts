@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import axios from "axios";
 import "dotenv/config";
 import { TMessage, TConversation } from "./types";
+
 async function sendMessage(
   provider: ethers.providers.Web3Provider,
   recipient: string,
@@ -48,7 +49,7 @@ function isOnchainMessage(tx: any): string | null {
 // };
 
 const getAllTxs = async (address: string) => {
-  console.log({ etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY });
+  // console.log({ etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY });
   const { data } = await axios.get(
     `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&page=1&offset=10000&sort=asc&apikey=${process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY}`
   );
@@ -61,7 +62,7 @@ const getAllRawMessages = async (address: string): Promise<TMessage[]> => {
   const txs = await getAllTxs(address);
 
   if (txs.length === 0) return [];
-  console.log({ txs });
+  // console.log({ txs });
 
   const messages: TMessage[] = txs
     .map((tx: any) => {
@@ -101,7 +102,7 @@ const getAllRawMessages = async (address: string): Promise<TMessage[]> => {
 
   // // console.log({ messages, receivedMessages });
   // console.log({ receivedMessages });
-  console.log({ messages });
+  // console.log({ messages });
   return messages;
 };
 
@@ -146,61 +147,57 @@ const getAllRawMessages = async (address: string): Promise<TMessage[]> => {
 export const getAllConversationsFromNativeOnchain = async (
   owner: string
 ): Promise<TConversation[]> => {
-  owner = "0xb66cd966670d962C227B3EABA30a872DbFb995db";
+  // owner = "0xb66cd966670d962C227B3EABA30a872DbFb995db";
+  owner = owner.toLowerCase();
   const messages = await getAllRawMessages(owner);
 
-  const conversations: TConversation[] = messages.map((msg) => ({
-    addressTo: msg.senderAddress as `0x${string}`,
-    conversation_native: msg.senderAddress as `0x${string}`,
-    lastMessageDate: new Date(msg.sentAt), // assuming the timestamp is in a format that the Date constructor can interpret
-  }));
+  const conversationsByAddress: { [address: string]: TConversation } = {};
 
+  messages.forEach((msg) => {
+    const otherParty: any =
+      msg.senderAddress === owner ? msg.recipientAddress : msg.senderAddress;
+    console.log({ otherParty });
+    if (!conversationsByAddress[otherParty]) {
+      conversationsByAddress[otherParty] = {
+        addressTo: otherParty,
+        conversation_native: msg.senderAddress as `0x${string}`,
+        lastMessageDate: new Date(msg.sentAt), // assuming the timestamp is in a format that the Date constructor can interpret
+      };
+    }
+  });
+
+  // Convert the object values into an array
+  const conversations: TConversation[] = Object.values(conversationsByAddress);
+  console.log({ conversations });
   return conversations;
 };
-
-// getMessagesFromNativeOnchain("0xb66cd966670d962C227B3EABA30a872DbFb995db");
 export const getMessagesFromNativeOnchain = async (
   owner: string,
   other: string
 ): Promise<TMessage[]> => {
+  // owner = "0xb66cd966670d962C227B3EABA30a872DbFb995db";
+
   const messages = await getAllRawMessages(owner);
-  console.log({ messages })
-  const conversationRaw = messages.filter(
-    (msg: any) =>
-      (msg.senderAddress.toLowerCase() === other.toLowerCase() &&
-        msg.recipientAddress.toLowerCase() === owner.toLowerCase()) ||
-      (msg.senderAddress.toLowerCase() === owner.toLowerCase() &&
-        msg.recipientAddress.toLowerCase() === other.toLowerCase())
-  );
-  console.log({ conversationRaw });
-  // const conversation: TConversation[] = conversationRaw.map((msg) => {
-  //   return {
-  //     id: msg.hash,
-  //     senderAddress: msg.from,
-  //     recipientAddress: msg.to,
-  //     // value: tx.value,
-  //     sentAt: new Date(parseInt(tx.timeStamp) * 1000),
-  //     content: message,
+  console.log({ messages, other, owner, d: "s" });
+  const filteredMessages = messages
+    .filter(
+      (msg) =>
+        (msg.senderAddress.toLowerCase() === owner.toLowerCase() &&
+          msg.recipientAddress.toLowerCase() === other.toLowerCase()) ||
+        (msg.senderAddress.toLowerCase() === other.toLowerCase() &&
+          msg.recipientAddress.toLowerCase() === owner.toLowerCase())
+    )
+    .sort((a, b) => a.sentAt.getTime() - b.sentAt.getTime());
+  console.log({ filteredMessages });
 
-  //     me: tx.from.toLowerCase() === address,
-  //     platform: "native",
-
-  //     id: msg.id, // assuming msg object has id
-  //     addressTo: msg.recipientAddress,
-  //     platform: msg.platform, // assuming msg object has platform
-  //     imgUrl: "msg.imgUrl", // assuming msg object has imgUrl
-  //     lastMessageDate: new Date(
-  //       conversationRaw[conversationRaw.length - 1].sentAt
-  //     ), // assuming msg object has timestamp
-  //     owner,
-  //   };
-  // });
-
-  // console.log({ conversation });
-  return conversationRaw;
+  return filteredMessages;
 };
 
-// getConversationFromNativeOnchain(
+// getMessagesFromNativeOnchain(
 //   "0xb66cd966670d962C227B3EABA30a872DbFb995db",
 //   "0x0bf93ea5a1fa4ce3dd22c7ffd314462d3869777f"
+// );
+
+// getAllConversationsFromNativeOnchain(
+//   "0xb66cd966670d962C227B3EABA30a872DbFb995db"
 // );

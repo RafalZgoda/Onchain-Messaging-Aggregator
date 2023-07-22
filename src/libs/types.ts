@@ -16,6 +16,7 @@ export type TConversation = {
   conversation_push?: PushAPI.IFeeds;
   conversation_push_request?: PushAPI.IFeeds;
   conversation_native?: string;
+  lastMessageDate?: Date;
 };
 
 export type TConversationByAddress = {
