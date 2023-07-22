@@ -166,7 +166,7 @@ export default function HeaderAction({ links }: HeaderActionProps) {
               </svg>
             </a>
           </Link>
-          <div className="ml-5">
+          <div className="ml-3">
             <ConnectKitButton />
           </div>
         </div>
