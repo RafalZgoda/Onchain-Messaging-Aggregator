@@ -45,6 +45,9 @@ export const getAllConversationsPush = async ({
   address: string;
   pgpPrivateKey: string;
 }): Promise<TConversation[]> => {
+  if (!pgpPrivateKey) {
+    return [];
+  }
   const push_conversations = await PushAPI.chat.chats({
     account: `eip155:${address}`,
     toDecrypt: true,
@@ -99,7 +102,7 @@ export const getMessagesPush = async ({
     account: `eip155:${address}`,
     toDecrypt: true,
     env: ENV.PROD,
-  })
+  });
   const response = await PushAPI.chat.history({
     threadhash,
     pgpPrivateKey,
@@ -156,6 +159,9 @@ export const getRequestsPush = async ({
   address: string;
   pgpPrivateKey: string;
 }): Promise<TConversation[]> => {
+  if (!pgpPrivateKey) {
+    return [];
+  }
   const requests = await PushAPI.chat.requests({
     account: `eip155:${address}`,
     toDecrypt: true,
