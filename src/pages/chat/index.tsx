@@ -3,146 +3,149 @@ import Messages from "./components/Messages";
 import { useEffect, useState } from "react";
 import React from "react";
 import {
-  TXMTPClient,
-  getAggregatedConversations,
-  getAggregatedMessages,
-  TConversation,
-  TMessage,
-  TMessagePlatform,
-  MESSAGE_PLATFORMS_ARRAY,
-  sendAggregatedMessage,
-  sendAggregatedNewMessage,
+	TXMTPClient,
+	getAggregatedConversations,
+	getAggregatedMessages,
+	TConversation,
+	TMessage,
+	TMessagePlatform,
+	MESSAGE_PLATFORMS_ARRAY,
+	sendAggregatedMessage,
+	sendAggregatedNewMessage,
 } from "libs";
 
 import { JsonRpcSigner } from "@ethersproject/providers";
 import { useAccount, useEnsAvatar, useEnsName } from "wagmi";
+import EnsNameAvatar from "./components/ENSNameAvatar";
 
 export default function Chat({
-  xmtp,
-  signer,
+	xmtp,
+	signer,
 }: {
-  xmtp: TXMTPClient;
-  signer: JsonRpcSigner;
+	xmtp: TXMTPClient;
+	signer: JsonRpcSigner;
 }) {
-  const [connversations, setConversations] = useState<TConversation[]>([]);
-  const [activeConversation, setActiveConversation] =
-    useState<TConversation>(null);
-  const [messages, setMessages] = useState<TMessage[]>([]);
-  const [filteredMessages, setFilteredMessages] = useState<TMessage[]>([]);
-  const [platformsFilter, setPlatformsFilter] = useState<TMessagePlatform[]>(
-    MESSAGE_PLATFORMS_ARRAY
-  );
-  const [platformsFilterVisibility, setPlatformsFilterVisibility] =
-    useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [ensAvartUrl, setEnsAvartUrl] = useState("");
+	const [connversations, setConversations] = useState<TConversation[]>([]);
+	const [activeConversation, setActiveConversation] =
+		useState<TConversation>(null);
+	const [messages, setMessages] = useState<TMessage[]>([]);
+	const [filteredMessages, setFilteredMessages] = useState<TMessage[]>([]);
+	const [platformsFilter, setPlatformsFilter] = useState<TMessagePlatform[]>(
+		MESSAGE_PLATFORMS_ARRAY
+	);
+	const [platformsFilterVisibility, setPlatformsFilterVisibility] =
+		useState(false);
+	const [inputValue, setInputValue] = useState("");
+	const [ensAvartUrl, setEnsAvartUrl] = useState("");
 
-  const [newMessageModalVisibility, setNewMessageModalVisibility] =
-    useState(false);
-  const [newMessageAddress, setNewMessageAddress] = useState("");
+	const [newMessageModalVisibility, setNewMessageModalVisibility] =
+		useState(false);
+	const [newMessageAddress, setNewMessageAddress] = useState("");
 
-  useEffect(() => {
-    if (!xmtp || !signer) return;
-    getConversations();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xmtp, signer]);
+	useEffect(() => {
+		if (!xmtp || !signer) return;
+		getConversations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [xmtp, signer]);
 
-  const handleFilterPlatform = (platform: TMessagePlatform) => {
-    if (platformsFilter.includes(platform)) {
-      setPlatformsFilter(
-        platformsFilter.filter((platformFilter) => platformFilter !== platform)
-      );
-    } else {
-      setPlatformsFilter([...platformsFilter, platform]);
-    }
-  };
+	const handleFilterPlatform = (platform: TMessagePlatform) => {
+		if (platformsFilter.includes(platform)) {
+			setPlatformsFilter(
+				platformsFilter.filter(
+					(platformFilter) => platformFilter !== platform
+				)
+			);
+		} else {
+			setPlatformsFilter([...platformsFilter, platform]);
+		}
+	};
 
-  const handlerActiveConversation = (conversation: TConversation) => {
-    setActiveConversation(conversation);
-  };
+	const handlerActiveConversation = (conversation: TConversation) => {
+		setActiveConversation(conversation);
+	};
 
-  const handleSendMessage = async () => {
-    await sendAggregatedMessage({
-      conversation_xmtp: activeConversation.conversation_xmtp,
-      message: inputValue,
-    });
-    setInputValue("");
-    await getMessages();
-  };
+	const handleSendMessage = async () => {
+		await sendAggregatedMessage({
+			conversation_xmtp: activeConversation.conversation_xmtp,
+			message: inputValue,
+		});
+		setInputValue("");
+		await getMessages();
+	};
 
-  const handleSendNewMessage = async () => {
-    await sendAggregatedNewMessage({
-      addressTo: newMessageAddress,
-      message: inputValue,
-      xmtp_client: xmtp,
-    });
-    setInputValue("");
-    await refreshConversations();
-    setNewMessageModalVisibility(false);
-  };
+	const handleSendNewMessage = async () => {
+		await sendAggregatedNewMessage({
+			addressTo: newMessageAddress,
+			message: inputValue,
+			xmtp_client: xmtp,
+		});
+		setInputValue("");
+		await refreshConversations();
+		setNewMessageModalVisibility(false);
+	};
 
-  useEffect(() => {
-    //update filtered messages
-    const filteredMessages = messages.filter((message) =>
-      platformsFilter.includes(message.platform)
-    );
-    setFilteredMessages(filteredMessages);
-  }, [messages, platformsFilter]);
+	useEffect(() => {
+		//update filtered messages
+		const filteredMessages = messages.filter((message) =>
+			platformsFilter.includes(message.platform)
+		);
+		setFilteredMessages(filteredMessages);
+	}, [messages, platformsFilter]);
 
-  useEffect(() => {
-    if (!xmtp || !activeConversation || !signer) return;
-    getMessages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xmtp, activeConversation, signer]);
+	useEffect(() => {
+		if (!xmtp || !activeConversation || !signer) return;
+		getMessages();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [xmtp, activeConversation, signer]);
 
-  const getMessages = async () => {
-    if (!activeConversation) return;
-    const userAddress = await signer.getAddress();
-    const messages = await getAggregatedMessages({
-      conversation_xmtp: activeConversation?.conversation_xmtp,
-      userAddress,
-    });
-    setMessages(messages);
-  };
+	const getMessages = async () => {
+		if (!activeConversation) return;
+		const userAddress = await signer.getAddress();
+		const messages = await getAggregatedMessages({
+			conversation_xmtp: activeConversation?.conversation_xmtp,
+			userAddress,
+		});
+		setMessages(messages);
+	};
 
-  const getConversations = async () => {
-    const conversations = await getAggregatedConversations({
-      xmtp_client: xmtp,
-    });
-    setConversations(conversations);
-  };
+	const getConversations = async () => {
+		const conversations = await getAggregatedConversations({
+			xmtp_client: xmtp,
+		});
+		setConversations(conversations);
+	};
 
-  const refreshConversations = async () => {
-    await getConversations();
-    await getMessages();
-  };
+	const refreshConversations = async () => {
+		await getConversations();
+		await getMessages();
+	};
 
-  useEffect(() => {
-    if (!xmtp || !signer) return;
-    const interval = setInterval(async () => {
-      await refreshConversations();
-    }, 10000);
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xmtp, signer, activeConversation]);
+	useEffect(() => {
+		if (!xmtp || !signer) return;
+		const interval = setInterval(async () => {
+			await refreshConversations();
+		}, 10000);
+		return () => clearInterval(interval);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [xmtp, signer, activeConversation]);
 
-  const SvgGenerator = (props) => {
-    const { path, className } = props;
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className={className}
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path fillRule="evenodd" d={path} clipRule="evenodd" />
-      </svg>
-    );
-  };
+	const SvgGenerator = (props) => {
+		const { path, className } = props;
+		return (
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				className={className}
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			>
+				<path fillRule="evenodd" d={path} clipRule="evenodd" />
+			</svg>
+		);
+	};
 
   return (
     <>
