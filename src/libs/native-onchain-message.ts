@@ -148,6 +148,7 @@ export const getAllConversationsFromNativeOnchain = async (
   owner: string
 ): Promise<TConversation[]> => {
   // owner = "0xb66cd966670d962C227B3EABA30a872DbFb995db";
+  owner = owner.toLowerCase();
   const messages = await getAllRawMessages(owner);
 
   const conversationsByAddress: { [address: string]: TConversation } = {};
@@ -155,6 +156,7 @@ export const getAllConversationsFromNativeOnchain = async (
   messages.forEach((msg) => {
     const otherParty: any =
       msg.senderAddress === owner ? msg.recipientAddress : msg.senderAddress;
+    console.log({ otherParty });
     if (!conversationsByAddress[otherParty]) {
       conversationsByAddress[otherParty] = {
         addressTo: otherParty,
