@@ -29,7 +29,7 @@ export const Profile = ({ profile }: { profile: TUserProfile }) => {
           <p className="m-0 p-0">{profile?.identity}</p>
         </div>
       </div>
-      {profile.neighbors.map((neighbor) => {
+      {profile?.neighbors.map((neighbor) => {
         return (
           <div className="bg-[#38383fb7] w-6/12 px-10 py-5 flex rounded-[50px]">
             <img
