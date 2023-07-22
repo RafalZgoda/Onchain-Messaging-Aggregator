@@ -430,7 +430,7 @@ export default function Chat({
 										)
 									) : (
 										<h2 className="text-center">
-											Select a conversion
+											Select a conversation
 										</h2>
 									)}
 								</div>
