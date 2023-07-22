@@ -1,4 +1,4 @@
-import { TConversation, TMessage } from "./types";
+import { TConversation, TMessage, MESSAGE_PLATFORMS } from "./types";
 import {
   getConversationsListXMTP,
   getMessagesHistoryXMTP,
@@ -26,7 +26,7 @@ const formatConversations = function ({
     return {
       id: "randomId",
       addressTo: conversation.peerAddress,
-      platform: "xmtp",
+      platform: MESSAGE_PLATFORMS.xmtp,
       imgUrl: "https://i.pravatar.cc/45?img=11",
       lastMessageDate: new Date(),
       conversation_xmtp: conversation,

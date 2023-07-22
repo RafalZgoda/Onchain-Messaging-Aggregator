@@ -4,7 +4,7 @@ import {
   Conversation as TXMTPConversation,
 } from "@xmtp/xmtp-js";
 import { JsonRpcSigner } from "@ethersproject/providers";
-import { TMessage } from "./types";
+import { TMessage, MESSAGE_PLATFORMS } from "./types";
 export type { TXMTPClient, TXMTPMessage, TXMTPConversation };
 
 export const initXMTPClient = async function ({
@@ -83,7 +83,7 @@ export const formatMessagesXMTP = async function ({
       recipientAddress: message.recipientAddress || "",
       sent: message.sent,
       content: message.content.toString(),
-      platform: "xmtp",
+      platform: MESSAGE_PLATFORMS.xmtp,
       me: message.senderAddress.toLowerCase() === userAddressLower,
     };
     formattedMessages.push(formattedMessage);
