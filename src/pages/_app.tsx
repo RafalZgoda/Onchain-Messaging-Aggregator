@@ -6,11 +6,7 @@ import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { useEffect, useState } from "react";
 import { type WalletClient } from "@wagmi/core";
 import { watchWalletClient } from "@wagmi/core";
-import {
-	Platform,
-	getEthersSigner,
-	getUserOnChainData,
-} from "@/libs/utils/truncate-hash";
+import { Platform, getEthersSigner, getUserOnChainData } from "@/libs";
 import { providers } from "ethers";
 import Layout from "@/components/Layout";
 import { RouterTransition } from "@/components/RouterTransition";

@@ -5,7 +5,7 @@ import {
 	initXMTPClient,
 	MESSAGE_PLATFORMS_ARRAY,
 	TXMTPClient,
-} from "@/libs/utils/truncate-hash";
+} from "@/libs";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 const Protocol = ({

@@ -1,6 +1,6 @@
 import WorldcoinButton from "@/components/WorldcoinButton";
 import { Button, Loader, LoadingOverlay } from "@mantine/core";
-import { TUserProfile } from "@/libs/utils/truncate-hash";
+import { TUserProfile } from "@/libs";
 import Image from "next/image";
 
 export const Profile = ({

@@ -1,7 +1,7 @@
 import { Logo } from "components/Logo";
 import { useState } from "react";
 import { Protocols } from "./components/protocols";
-import { TUserProfile, TXMTPClient } from "@/libs/utils/truncate-hash";
+import { TUserProfile, TXMTPClient } from "@/libs";
 import { Profile } from "./components/profile";
 import { providers } from "ethers";
 export default function Settings({
