@@ -9,6 +9,7 @@ import {
   TMessage,
   TMessagePlatform,
   MESSAGE_PLATFORMS_ARRAY,
+  sendAggregatedMessage,
 } from "libs";
 import Router from "next/router";
 import { JsonRpcSigner } from "@ethersproject/providers";
@@ -29,19 +30,15 @@ export default function Chat({
   );
   const [platformsFilterVisibility, setPlatformsFilterVisibility] =
     useState(false);
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     if (!xmtp || !signer) {
       Router.push("/");
       return;
     }
-    const getConversations = async () => {
-      const conversations = await getAggregatedConversations({
-        xmtp_client: xmtp,
-      });
-      setConversations(conversations);
-    };
     getConversations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xmtp, signer]);
 
   const handleFilterPlatform = (platform: TMessagePlatform) => {
@@ -54,6 +51,19 @@ export default function Chat({
     }
   };
 
+  const handlerActiveConversation = (conversation: TConversation) => {
+    setActiveConversation(conversation);
+  };
+
+  const handleSendMessage = async () => {
+    await sendAggregatedMessage({
+      conversation_xmtp: activeConversation.conversation_xmtp,
+      message: inputValue,
+    });
+    setInputValue("");
+    await getMessages();
+  };
+
   useEffect(() => {
     //update filtered messages
     const filteredMessages = messages.filter((message) =>
@@ -64,16 +74,40 @@ export default function Chat({
 
   useEffect(() => {
     if (!xmtp || !activeConversation || !signer) return;
-    const getMessages = async () => {
-      const userAddress = await signer.getAddress();
-      const messages = await getAggregatedMessages({
-        conversation_xmtp: activeConversation?.conversation_xmtp,
-        userAddress,
-      });
-      setMessages(messages);
-    };
     getMessages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xmtp, activeConversation, signer]);
+
+  const getMessages = async () => {
+    if (!activeConversation) return;
+    const userAddress = await signer.getAddress();
+    const messages = await getAggregatedMessages({
+      conversation_xmtp: activeConversation?.conversation_xmtp,
+      userAddress,
+    });
+    setMessages(messages);
+  };
+
+  const getConversations = async () => {
+    const conversations = await getAggregatedConversations({
+      xmtp_client: xmtp,
+    });
+    setConversations(conversations);
+  };
+
+  const refreshConversations = async () => {
+    await getConversations();
+    await getMessages();
+  };
+
+  useEffect(() => {
+    if (!xmtp || !signer) return;
+    const interval = setInterval(async () => {
+      await refreshConversations();
+    }, 10000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [xmtp, signer, activeConversation]);
 
   const SvgGenerator = (props) => {
     const { path, className } = props;
@@ -120,7 +154,13 @@ export default function Chat({
                   {xmtp && connversations && connversations.length > 0 ? (
                     connversations.map((conversation, index) => (
                       <div
-                        onClick={() => setActiveConversation(conversation)}
+                        className={`${
+                          activeConversation?.addressTo ===
+                          conversation.addressTo
+                            ? "bg-red-200"
+                            : ""
+                        }`}
+                        onClick={() => handlerActiveConversation(conversation)}
                         key={index}
                       >
                         <ChatCard conversation={conversation} />
@@ -222,7 +262,15 @@ export default function Chat({
                     type="text"
                     placeholder="Write a message..."
                     className="w-full text-white text-xs p-2.5 rounded-md outline-none bg-telegram-gray-300"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSendMessage();
+                      }
+                    }}
                   />
+                  <button onClick={() => handleSendMessage()}>Send</button>
                   <SvgGenerator
                     path="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     className="mr-1 w-9 top-2 left-2 text-telegram-gray-100"

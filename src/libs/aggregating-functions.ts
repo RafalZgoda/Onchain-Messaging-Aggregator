@@ -4,6 +4,7 @@ import {
   getMessagesHistoryXMTP,
   TXMTPClient,
   TXMTPConversation,
+  sendMessageXMTP,
 } from "./xmtp";
 export const getAggregatedConversations = async function ({
   xmtp_client,
@@ -51,4 +52,16 @@ export const getAggregatedMessages = async function ({
     userAddress,
   });
   return xmtp_messages;
+};
+
+export const sendAggregatedMessage = async function ({
+  conversation_xmtp,
+  message,
+}: {
+  conversation_xmtp?: TXMTPConversation;
+  message: string;
+}): Promise<void> {
+  if (conversation_xmtp) {
+    await sendMessageXMTP({ conversation: conversation_xmtp, message });
+  }
 };
