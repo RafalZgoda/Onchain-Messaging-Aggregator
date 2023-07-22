@@ -16,6 +16,7 @@ import {
 
 import { JsonRpcSigner } from "@ethersproject/providers";
 import { useAccount, useEnsAvatar, useEnsName } from "wagmi";
+import EnsNameAvatar from "./components/ENSNameAvatar";
 
 export default function Chat({
 	xmtp,
@@ -255,24 +256,14 @@ export default function Chat({
 								<div className="flex items-center justify-between px-5 pt-3 bg-[#26282D] rounded-t-[30px] border-b">
 									<div className="flex items-center">
 										<div className="ml-2 flex items-center">
-											<img
-												className="rounded-full w-10 h-10 mr-3"
-												src={
-													ensAvartUrl ??
-													"/img/eth.png"
-												}
-											></img>
-											<div>
-												<h2 className="font-medium text-white text-sm m-0">
-													{
+											{activeConversation?.addressTo && (
+												<EnsNameAvatar
+													address={
 														activeConversation?.addressTo
 													}
-												</h2>
-												<p className=" text-telegram-gray-100 text-xs m-0">
-													last message at{" "}
-													{activeConversation?.lastMessageDate.toDateString()}
-												</p>
-											</div>
+													subtext={`Last message at ${activeConversation?.lastMessageDate.toDateString()}`}
+												/>
+											)}
 										</div>
 									</div>
 									<div className="w-40 text-telegram-gray-100 flex justify-end">
