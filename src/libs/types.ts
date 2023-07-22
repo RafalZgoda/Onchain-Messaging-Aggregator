@@ -36,9 +36,15 @@ export const MESSAGE_PLATFORMS = {
     name: "Push",
     imgUrl: "https://i.pravatar.cc/45?img=12",
   } as TMessagePlatform,
-  tx: {
-    id: "tx",
-    name: "TX",
+  vanilla: {
+    id: "vanilla",
+    name: "Vanilla",
     imgUrl: "https://i.pravatar.cc/45?img=13",
   } as TMessagePlatform,
-}
+};
+
+export const MESSAGE_PLATFORMS_ARRAY = Object.values(MESSAGE_PLATFORMS);
+
+export const MESSAGE_PLATFORMS_NAMES = Object.values(MESSAGE_PLATFORMS).map(
+  (platform) => platform.name
+);

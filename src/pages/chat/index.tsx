@@ -7,6 +7,8 @@ import {
   getAggregatedMessages,
   TConversation,
   TMessage,
+  TMessagePlatform,
+  MESSAGE_PLATFORMS_ARRAY,
 } from "libs";
 import Router from "next/router";
 import { JsonRpcSigner } from "@ethersproject/providers";
@@ -21,6 +23,12 @@ export default function Chat({
   const [activeConversation, setActiveConversation] =
     useState<TConversation>(null);
   const [messages, setMessages] = useState<TMessage[]>([]);
+  const [filteredMessages, setFilteredMessages] = useState<TMessage[]>([]);
+  const [platformsFilter, setPlatformsFilter] = useState<TMessagePlatform[]>(
+    MESSAGE_PLATFORMS_ARRAY
+  );
+  const [platformsFilterVisibility, setPlatformsFilterVisibility] =
+    useState(false);
 
   useEffect(() => {
     if (!xmtp || !signer) {
@@ -36,6 +44,24 @@ export default function Chat({
     getConversations();
   }, [xmtp, signer]);
 
+  const handleFilterPlatform = (platform: TMessagePlatform) => {
+    if (platformsFilter.includes(platform)) {
+      setPlatformsFilter(
+        platformsFilter.filter((platformFilter) => platformFilter !== platform)
+      );
+    } else {
+      setPlatformsFilter([...platformsFilter, platform]);
+    }
+  };
+
+  useEffect(() => {
+    //update filtered messages
+    const filteredMessages = messages.filter((message) =>
+      platformsFilter.includes(message.platform)
+    );
+    setFilteredMessages(filteredMessages);
+  }, [messages, platformsFilter]);
+
   useEffect(() => {
     if (!xmtp || !activeConversation || !signer) return;
     const getMessages = async () => {
@@ -44,7 +70,6 @@ export default function Chat({
         conversation_xmtp: activeConversation?.conversation_xmtp,
         userAddress,
       });
-      console.log(messages);
       setMessages(messages);
     };
     getMessages();
@@ -131,14 +156,58 @@ export default function Chat({
                       path="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                       className="w-5 h-5"
                     />
-                    <SvgGenerator // logo params
-                      path="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                      className="w-5 h-5"
-                    />
+
+                    <button
+                      onClick={() => {
+                        setPlatformsFilterVisibility(
+                          !platformsFilterVisibility
+                        );
+                      }}
+                    >
+                      <SvgGenerator // logo params
+                        path="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                        className="w-5 h-5"
+                      />
+                    </button>
                   </div>
                 </div>
+
+                {platformsFilterVisibility && (
+                  <div className="flex items-center justify-center bg-telegram-gray-300">
+                    <p>Filters:</p>
+                    <ul className="flex">
+                      <li>
+                        <input
+                          // all platforms
+                          type="checkbox"
+                          onChange={() =>
+                            setPlatformsFilter(MESSAGE_PLATFORMS_ARRAY)
+                          }
+                          checked={
+                            platformsFilter.length ===
+                            MESSAGE_PLATFORMS_ARRAY.length
+                          }
+                          className="w-3 h-3"
+                        />
+                        <label>All</label>
+                      </li>
+                      {MESSAGE_PLATFORMS_ARRAY.map((platform, index) => (
+                        <li key={index}>
+                          <input
+                            type="checkbox"
+                            onChange={() => handleFilterPlatform(platform)}
+                            checked={platformsFilter.includes(platform)}
+                            className="w-3 h-3"
+                          />
+                          <label>{platform.name}</label>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 <div className="relative pb-3 w-full h-full overflow-y-scroll flex justify-end flex-col bg-telegram-gray-400">
-                  {messages.map((message, index) => (
+                  {filteredMessages.map((message, index) => (
                     <div key={index}>
                       <Messages message={message} />
                     </div>
