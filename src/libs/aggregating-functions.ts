@@ -1,4 +1,4 @@
-import { TConversation, TMessage, MESSAGE_PLATFORMS } from "./types";
+import { TConversation, TMessage } from "./types";
 import {
   getConversationsListXMTP,
   getMessagesHistoryXMTP,
@@ -7,52 +7,111 @@ import {
   sendMessageXMTP,
   getConversationXMTP,
 } from "./xmtp";
+import {
+  getAllConversationsPush,
+  getRequestsPush,
+  getMessagesPush,
+} from "./push";
+import * as PushAPI from "@pushprotocol/restapi";
 export const getAggregatedConversations = async function ({
   xmtp_client,
+  pgpPrivateKey,
+  userAddress,
 }: {
   xmtp_client: TXMTPClient;
+  pgpPrivateKey: string;
+  userAddress: string;
 }): Promise<TConversation[]> {
   const xmtp_conversations = await getConversationsListXMTP({ xmtp_client });
-  const conversations = formatConversations({
+  const push_conversations = await getAllConversationsPush({
+    address: userAddress,
+    pgpPrivateKey,
+  });
+  const push_requests = await getRequestsPush({
+    address: userAddress,
+    pgpPrivateKey,
+  });
+  const conversations = mergeConversations({
     conversationsXMTP: xmtp_conversations,
+    conversationsPush: push_conversations,
+    requestsPush: push_requests,
   });
   return conversations;
 };
 
-const formatConversations = function ({
+const mergeConversations = function ({
   conversationsXMTP,
-}: {
-  conversationsXMTP: TXMTPConversation[];
-}): TConversation[] {
-  const conversations = conversationsXMTP.map((conversation) => {
-    return {
-      id: "randomId",
-      addressTo: conversation.peerAddress,
-      platform: MESSAGE_PLATFORMS.xmtp,
-      imgUrl: "https://i.pravatar.cc/45?img=11",
-      lastMessageDate: new Date(),
-      conversation_xmtp: conversation,
-    };
-  });
-  return conversations;
+  conversationsPush,
+  requestsPush,
+}) {
+  // Define an empty map to hold the merged conversations
+  const mergedConversations = new Map();
+
+  // Process XMTP conversations
+  for (const conversation of conversationsXMTP) {
+    mergedConversations.set(conversation.addressTo, {
+      ...mergedConversations.get(conversation.addressTo),
+      conversation_xmtp: conversation.conversation_xmtp,
+    });
+  }
+
+  // Process Push conversations
+  for (const conversation of conversationsPush) {
+    mergedConversations.set(conversation.addressTo, {
+      ...mergedConversations.get(conversation.addressTo),
+      conversation_push: conversation.conversation_push,
+    });
+  }
+
+  // Process Request conversations
+  for (const conversation of requestsPush) {
+    mergedConversations.set(conversation.addressTo, {
+      ...mergedConversations.get(conversation.addressTo),
+      conversation_push_request: conversation.conversation_push_request,
+    });
+  }
+
+  // Convert the map values to an array and return it
+  return Array.from(mergedConversations.values());
 };
 
 export const getAggregatedMessages = async function ({
   conversation_xmtp,
   userAddress,
+  conversation_push,
+  conversation_push_request,
+  pgpPrivateKey,
 }: {
   conversation_xmtp?: TXMTPConversation;
   userAddress: string;
+  conversation_push?: PushAPI.IFeeds;
+  conversation_push_request?: PushAPI.IFeeds;
+  pgpPrivateKey: string;
 }): Promise<TMessage[]> {
-  if (!conversation_xmtp) {
-    //and others
-    return [];
+  let messages = [] as TMessage[];
+
+  if (conversation_xmtp) {
+    const xmtp_messages = await getMessagesHistoryXMTP({
+      conversation: conversation_xmtp,
+      userAddress,
+    });
+    messages = [...messages, ...xmtp_messages];
   }
-  const xmtp_messages = await getMessagesHistoryXMTP({
-    conversation: conversation_xmtp,
-    userAddress,
-  });
-  return xmtp_messages;
+
+  if (conversation_push || conversation_push_request) {
+    const valid_conversation_push = conversation_push
+      ? conversation_push
+      : conversation_push_request;
+    const push_messages = await getMessagesPush({
+      address: valid_conversation_push.wallets.split(":")[1],
+      threadhash: valid_conversation_push.threadhash,
+      pgpPrivateKey,
+      userAddress,
+    });
+    messages = [...messages, ...push_messages];
+  }
+
+  return messages;
 };
 
 export const sendAggregatedMessage = async function ({
@@ -76,11 +135,9 @@ export const sendAggregatedNewMessage = async function ({
   addressTo: string;
   message: string;
 }): Promise<void> {
-  console.log(xmtp_client);
   const conversation = await getConversationXMTP({
     xmtp_client,
     addressTo,
   });
-  console.log(conversation);
   await sendMessageXMTP({ conversation, message });
 };

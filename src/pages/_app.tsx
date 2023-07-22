@@ -24,6 +24,7 @@ function MyApp({ Component, pageProps }) {
   const [wallet, setWallet] = useState<WalletClient>(null);
   const [signer, setSigner] = useState<providers.JsonRpcSigner>(null);
   const [myProfile, setMyProfile] = useState(null);
+  const [pushPGPKey, setPushPGPKey] = useState("");
   useEffect(() => setMounted(true), []);
 
   const unwatch = watchWalletClient(
@@ -72,11 +73,15 @@ function MyApp({ Component, pageProps }) {
     if (xmtp) {
       setXmtp(JSON.parse(xmtp));
     }
+    const pushPGPKey = localStorage.getItem("pushPGPKey");
+    if (pushPGPKey) {
+      setPushPGPKey(pushPGPKey);
+    }
   }, []);
 
-  useEffect(() => {
-    console.log({ xmtp });
-  }, [xmtp]);
+  // useEffect(() => {
+  //   console.log({ pushPGPKey });
+  // }, [pushPGPKey]);
 
   return (
     <WagmiConfig config={config}>
@@ -103,6 +108,8 @@ function MyApp({ Component, pageProps }) {
                 xmtp={xmtp}
                 setXmtp={setXmtp}
                 myProfile={myProfile}
+                pushPGPKey={pushPGPKey}
+                setPushPGPKey={setPushPGPKey}
               />
             )}
           </Layout>

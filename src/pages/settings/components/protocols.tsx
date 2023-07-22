@@ -1,10 +1,13 @@
-import { providers } from "ethers";
+import { providers, Signer } from "ethers";
 import {
   MESSAGE_PLATFORMS,
   TMessagePlatform,
   initXMTPClient,
   MESSAGE_PLATFORMS_ARRAY,
   TXMTPClient,
+  getUserPush,
+  createUserPush,
+  decryptPGPKeyPush,
 } from "libs";
 import Image from "next/image";
 import { useState, useEffect } from "react";
@@ -13,23 +16,30 @@ const Protocol = ({
   xmtp,
   signer,
   platform,
+  setPushPGPKey,
+  pushPGPKey,
 }: {
   setXmtp: any;
   xmtp: TXMTPClient;
   signer: providers.JsonRpcSigner;
   platform: TMessagePlatform;
+  setPushPGPKey: any;
+  pushPGPKey: string;
 }) => {
   const [isProtocolSet, setIsProtocolSet] = useState(false);
 
   useEffect(() => {
     updateSetProtocol();
-  }, [platform.name, xmtp]);
+  }, [platform.name, xmtp, pushPGPKey]);
 
   const updateSetProtocol = () => {
     if (platform.name == MESSAGE_PLATFORMS.xmtp.name && xmtp) {
       setIsProtocolSet(true);
     }
     if (platform.name == MESSAGE_PLATFORMS.vanilla.name) {
+      setIsProtocolSet(true);
+    }
+    if (platform.name == MESSAGE_PLATFORMS.push.name && pushPGPKey) {
       setIsProtocolSet(true);
     }
   };
@@ -40,6 +50,7 @@ const Protocol = ({
       case MESSAGE_PLATFORMS.vanilla.name:
         break;
       case MESSAGE_PLATFORMS.push.name:
+        await handleInitPush();
         break;
       case MESSAGE_PLATFORMS.xmtp.name:
         await handleInitXmtp();
@@ -53,6 +64,24 @@ const Protocol = ({
     const xmtp = await initXMTPClient({ signer });
     setXmtp(xmtp);
     // localStorage.setItem("xmtp", JSON.stringify(xmtp));
+  };
+
+  const handleInitPush = async () => {
+    const userAddress = await signer.getAddress();
+    let user = await getUserPush(userAddress);
+    if (!user) {
+      user = await createUserPush({
+        address: userAddress,
+        signer,
+      });
+    }
+    const { encryptedPrivateKey } = user;
+    const privateKey = await decryptPGPKeyPush({
+      encryptedPGPPrivateKey: encryptedPrivateKey,
+      signer,
+    });
+    setPushPGPKey(privateKey);
+    localStorage.setItem("pushPGPKey", privateKey);
   };
 
   return (
@@ -83,10 +112,14 @@ export const Protocols = ({
   setXmtp,
   signer,
   xmtp,
+  pushPGPKey,
+  setPushPGPKey,
 }: {
   setXmtp: any;
   signer: providers.JsonRpcSigner;
   xmtp: TXMTPClient;
+  pushPGPKey: string;
+  setPushPGPKey: any;
 }) => {
   return (
     <div>
@@ -99,6 +132,8 @@ export const Protocols = ({
               setXmtp={setXmtp}
               signer={signer}
               xmtp={xmtp}
+              pushPGPKey={pushPGPKey}
+              setPushPGPKey={setPushPGPKey}
             />
           );
         })}

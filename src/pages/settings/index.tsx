@@ -9,11 +9,15 @@ export default function Settings({
   setXmtp,
   signer,
   xmtp,
+  pushPGPKey,
+  setPushPGPKey,
 }: {
   myProfile: TUserProfile;
   setXmtp: any;
   signer: providers.JsonRpcSigner;
   xmtp: TXMTPClient;
+  pushPGPKey: string;
+  setPushPGPKey: any;
 }) {
   const activeTabCSS = "bg-[#26282d]";
   const [activeTab, setActiveTab] = useState("Profile");
@@ -92,7 +96,13 @@ export default function Settings({
       </div>
       <div className="bg-[#26282D] w-full">
         {activeTab == "Protocols" && (
-          <Protocols setXmtp={setXmtp} signer={signer} xmtp={xmtp} />
+          <Protocols
+            setXmtp={setXmtp}
+            signer={signer}
+            xmtp={xmtp}
+            pushPGPKey={pushPGPKey}
+            setPushPGPKey={setPushPGPKey}
+          />
         )}
         {activeTab == "Profile" && <Profile profile={myProfile} />}
       </div>

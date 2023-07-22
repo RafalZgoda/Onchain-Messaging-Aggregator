@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import ChatCard from "./components/ChatCard";
 import Messages from "./components/Messages";
 import { useEffect, useState } from "react";
@@ -20,9 +21,11 @@ import { useAccount, useEnsAvatar, useEnsName } from "wagmi";
 export default function Chat({
   xmtp,
   signer,
+  pushPGPKey,
 }: {
   xmtp: TXMTPClient;
   signer: JsonRpcSigner;
+  pushPGPKey: string;
 }) {
   const [connversations, setConversations] = useState<TConversation[]>([]);
   const [activeConversation, setActiveConversation] =
@@ -42,10 +45,10 @@ export default function Chat({
   const [newMessageAddress, setNewMessageAddress] = useState("");
 
   useEffect(() => {
-    if (!xmtp || !signer) return;
+    if (!signer) return;
     getConversations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xmtp, signer]);
+  }, [xmtp, signer, pushPGPKey]);
 
   const handleFilterPlatform = (platform: TMessagePlatform) => {
     if (platformsFilter.includes(platform)) {
@@ -90,25 +93,34 @@ export default function Chat({
   }, [messages, platformsFilter]);
 
   useEffect(() => {
-    if (!xmtp || !activeConversation || !signer) return;
+    if ( !activeConversation || !signer) return;
     getMessages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xmtp, activeConversation, signer]);
+  }, [xmtp, activeConversation, signer, pushPGPKey]);
 
   const getMessages = async () => {
+    console.log(activeConversation);
     if (!activeConversation) return;
     const userAddress = await signer.getAddress();
+    console.log("getting messages");
     const messages = await getAggregatedMessages({
       conversation_xmtp: activeConversation?.conversation_xmtp,
       userAddress,
+      conversation_push: activeConversation?.conversation_push,
+      conversation_push_request: activeConversation?.conversation_push_request,
+      pgpPrivateKey: pushPGPKey,
     });
     setMessages(messages);
   };
 
   const getConversations = async () => {
+    console.log("getting conversations");
     const conversations = await getAggregatedConversations({
       xmtp_client: xmtp,
+      pgpPrivateKey: pushPGPKey,
+      userAddress: await signer.getAddress(),
     });
+    console.log({conversations});
     setConversations(conversations);
   };
 
@@ -118,7 +130,7 @@ export default function Chat({
   };
 
   useEffect(() => {
-    if (!xmtp || !signer) return;
+    if (!signer) return;
     const interval = setInterval(async () => {
       await refreshConversations();
     }, 10000);
@@ -204,7 +216,7 @@ export default function Chat({
                   </div>
                 </div>
                 <div className="overflow-y-scroll h-full">
-                  {xmtp && connversations && connversations.length > 0 ? (
+                  {connversations && connversations.length > 0 ? (
                     connversations.map((conversation, index) => (
                       <div
                         className={`${
@@ -239,10 +251,10 @@ export default function Chat({
                         <h2 className="font-medium text-white text-sm m-0">
                           {activeConversation?.addressTo}
                         </h2>
-                        <p className=" text-telegram-gray-100 text-xs m-0">
+                        {/* <p className=" text-telegram-gray-100 text-xs m-0">
                           last message at{" "}
                           {activeConversation?.lastMessageDate.toDateString()}
-                        </p>
+                        </p> */}
                       </div>
                     </div>
                   </div>

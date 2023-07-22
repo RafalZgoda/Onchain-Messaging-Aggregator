@@ -14,7 +14,7 @@ const Messages = ({ message }: { message: TMessage }) => {
       >
         {message.content}
         <span className="text-xs right-1 bottom-0 absolute opacity-60">
-          {message.sent.toDateString()} ✓
+          {message.sentAt.toDateString()} ✓
         </span>
         <span className="text-xs right-1 bottom-0 absolute opacity-60">
           {message.platform.name}
