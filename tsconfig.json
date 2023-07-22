@@ -24,7 +24,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/pages/telegram/index.js", "src/pages/telegram/index.tjs"  ],
+, "src/pages/telegram/index.js", "src/pages/telegram/index.tjs", "src/libs/wagmi-to-ethers.ts"  ],
   "exclude": [
     "node_modules"
   ]
