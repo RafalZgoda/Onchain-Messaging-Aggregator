@@ -6,7 +6,7 @@ export const Profile = ({ profile }: { profile: TUserProfile }) => {
     <div className="p-10">
       <div className="bg-[#38383fb7] w-fit px-10 py-5 flex rounded-[50px] items-center">
         <Image
-          src={"img/eth.png"}
+          src={"/img/eth.png"}
           width={64}
           height={64}
           alt="eth"
@@ -43,7 +43,7 @@ export const Profile = ({ profile }: { profile: TUserProfile }) => {
             className="bg-[#38383fb7] w-6/12 px-10 py-5 flex rounded-[50px]"
           >
             <Image
-              src={"img/" + neighbor.source + ".png"}
+              src={"/img/" + neighbor.source + ".png"}
               className="w-16 mr-3 object-contain"
               width={64}
               height={64}

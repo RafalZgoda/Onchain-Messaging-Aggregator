@@ -1,35 +1,108 @@
-import { MESSAGE_PLATFORMS } from "libs";
+import { providers } from "ethers";
+import {
+  MESSAGE_PLATFORMS,
+  TMessagePlatform,
+  initXMTPClient,
+  MESSAGE_PLATFORMS_ARRAY,
+  TXMTPClient,
+} from "libs";
 import Image from "next/image";
+import { useState, useEffect } from "react";
+const Protocol = ({
+  setXmtp,
+  xmtp,
+  signer,
+  platform,
+}: {
+  setXmtp: any;
+  xmtp: TXMTPClient;
+  signer: providers.JsonRpcSigner;
+  platform: TMessagePlatform;
+}) => {
+  const [isProtocolSet, setIsProtocolSet] = useState(false);
+  const [whatProtocol, setWhatProtocol] = useState(null);
 
-const Protocol = ({ img, title }: { img: string; title: string }) => {
-  const getButtonText = () => {
-    switch (title) {
-      case MESSAGE_PLATFORMS.vanilla.name:
-        return "Enabled ✅";
-      case MESSAGE_PLATFORMS.push.name:
-        return "Disabled ❌";
-      case MESSAGE_PLATFORMS.xmtp.name:
-        return "Disabled ❌";
+  useEffect(() => {
+    updateSetProtocol();
+  }, [platform.name, xmtp]);
+
+  const updateSetProtocol = () => {
+    if (platform.name == MESSAGE_PLATFORMS.xmtp.name && xmtp) {
+      setIsProtocolSet(true);
+    }
+    if (platform.name == MESSAGE_PLATFORMS.vanilla.name) {
+      setIsProtocolSet(true);
     }
   };
+
+  const handleSetPlatform = async (platform: TMessagePlatform) => {
+    if (isProtocolSet) return;
+    switch (platform.name) {
+      case MESSAGE_PLATFORMS.vanilla.name:
+        break;
+      case MESSAGE_PLATFORMS.push.name:
+        break;
+      case MESSAGE_PLATFORMS.xmtp.name:
+        await handleInitXmtp();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleInitXmtp = async () => {
+    const xmtp = await initXMTPClient({ signer });
+    setXmtp(xmtp);
+    // localStorage.setItem("xmtp", JSON.stringify(xmtp));
+  };
+
   return (
     <div className="w-64      rounded flex flex-col p-10 items-center justify-end">
-      <Image width={128} height={128} src={"img/" + img} alt={title} />
-      <h1 className="font-bold mt-3 text-xl text-white">{title}</h1>
-      <button className="border-none bg-[#3C8AFF] text-white px-5 py-2 mt-10  rounded-lg">
-        {getButtonText()}
+      <Image
+        width={128}
+        height={128}
+        src={"/img/" + platform.imgUrl}
+        alt={platform.name}
+      />
+      <h1 className="font-bold mt-3 text-xl text-white">{platform.name}</h1>
+      <button
+        onClick={() => {
+          handleSetPlatform(platform);
+        }}
+        // className="border-none bg-[#3C8AFF] text-white px-5 py-2 mt-10  rounded-lg cursor-pointer"
+        className={`border-none ${
+          isProtocolSet ? "bg-[#3C8AFF]" : "bg-[#38383f]"
+        } text-white px-5 py-2 mt-10  rounded-lg cursor-pointer hover:bg-[#3c8aff50] transition`}
+      >
+        {isProtocolSet ? "Enabled ✅" : "Disabled ❌"}
       </button>
     </div>
   );
 };
 
-export const Protocols = () => {
+export const Protocols = ({
+  setXmtp,
+  signer,
+  xmtp,
+}: {
+  setXmtp: any;
+  signer: providers.JsonRpcSigner;
+  xmtp: TXMTPClient;
+}) => {
   return (
     <div>
       <div className="flex p-10 justify-center gap-32">
-        <Protocol img="eth.png" title={MESSAGE_PLATFORMS.vanilla.name} />
-        <Protocol img="push.png" title={MESSAGE_PLATFORMS.push.name} />
-        <Protocol img="xmtp.png" title={MESSAGE_PLATFORMS.xmtp.name} />
+        {MESSAGE_PLATFORMS_ARRAY.map((platform, index) => {
+          return (
+            <Protocol
+              key={index}
+              platform={platform}
+              setXmtp={setXmtp}
+              signer={signer}
+              xmtp={xmtp}
+            />
+          );
+        })}
       </div>
       <p className="text-center text-white w-8/12 mx-auto">
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque eligendi

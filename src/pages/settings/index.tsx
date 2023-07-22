@@ -1,10 +1,20 @@
 import { Logo } from "components/Logo";
 import { useState } from "react";
 import { Protocols } from "./components/protocols";
-import { TUserProfile } from "libs";
+import { TUserProfile, TXMTPClient } from "libs";
 import { Profile } from "./components/profile";
-
-export default function Settings({ myProfile }: { myProfile: TUserProfile }) {
+import { providers } from "ethers";
+export default function Settings({
+  myProfile,
+  setXmtp,
+  signer,
+  xmtp,
+}: {
+  myProfile: TUserProfile;
+  setXmtp: any;
+  signer: providers.JsonRpcSigner;
+  xmtp: TXMTPClient;
+}) {
   const activeTabCSS = "bg-[#26282d]";
   const [activeTab, setActiveTab] = useState("Profile");
 
@@ -81,7 +91,9 @@ export default function Settings({ myProfile }: { myProfile: TUserProfile }) {
         </nav>
       </div>
       <div className="bg-[#26282D] w-full">
-        {activeTab == "Protocols" && <Protocols />}
+        {activeTab == "Protocols" && (
+          <Protocols setXmtp={setXmtp} signer={signer} xmtp={xmtp} />
+        )}
         {activeTab == "Profile" && <Profile profile={myProfile} />}
       </div>
     </div>

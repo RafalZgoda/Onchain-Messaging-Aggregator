@@ -36,12 +36,11 @@ function MyApp({ Component, pageProps }) {
   );
 
   const getProfile = async () => {
-    console.log("getting profile")
+    console.log("getting profile");
     const profile = await getUserOnChainData(
       await signer.getAddress(),
       Platform.ethereum
     );
-    console.log(profile);
     setMyProfile(profile);
   };
 
@@ -75,30 +74,38 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-	return (
-		<WagmiConfig config={config}>
-			<ConnectKitProvider>
-      <MantineProvider
-					withGlobalStyles
-					withNormalizeCSS
-					theme={{
-						colorScheme: "dark",
-					}}
-				>
-					<RouterTransition />
-					<Head>
-						<title>S3ND</title>
-						<meta name="MSG" content="Web3 messaging aggregator" />
-						<link rel="icon" href="/favicon.ico" />
-					</Head>
-					<Layout>{mounted && <Component {...pageProps} wallet={wallet}
-              signer={signer}
-              xmtp={xmtp}
-              setXmtp={setXmtp}
-              myProfile={myProfile}
-            />
-          }
-        </Layout>
+  useEffect(() => {
+    console.log({ xmtp });
+  }, [xmtp]);
+
+  return (
+    <WagmiConfig config={config}>
+      <ConnectKitProvider>
+        <MantineProvider
+          withGlobalStyles
+          withNormalizeCSS
+          theme={{
+            colorScheme: "dark",
+          }}
+        >
+          <RouterTransition />
+          <Head>
+            <title>S3ND</title>
+            <meta name="MSG" content="Web3 messaging aggregator" />
+            <link rel="icon" href="/favicon.ico" />
+          </Head>
+          <Layout>
+            {mounted && (
+              <Component
+                {...pageProps}
+                wallet={wallet}
+                signer={signer}
+                xmtp={xmtp}
+                setXmtp={setXmtp}
+                myProfile={myProfile}
+              />
+            )}
+          </Layout>
         </MantineProvider>
       </ConnectKitProvider>
     </WagmiConfig>
