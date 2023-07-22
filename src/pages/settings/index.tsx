@@ -94,7 +94,9 @@ export default function Settings({
         {activeTab == "Protocols" && (
           <Protocols setXmtp={setXmtp} signer={signer} xmtp={xmtp} />
         )}
-        {activeTab == "Profile" && <Profile profile={myProfile} />}
+        {activeTab == "Profile" && (
+          <Profile profile={myProfile} signer={signer} />
+        )}
       </div>
     </div>
   );

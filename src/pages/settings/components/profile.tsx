@@ -1,8 +1,16 @@
 import { Button, Loader, LoadingOverlay } from "@mantine/core";
+import WorldcoinButton from "../../../components/WorldcoinButton";
 import { TUserProfile } from "libs";
 import Image from "next/image";
+import { providers } from "ethers";
 
-export const Profile = ({ profile }: { profile: TUserProfile }) => {
+export const Profile = ({
+  profile,
+  signer,
+}: {
+  profile: TUserProfile;
+  signer: providers.JsonRpcSigner;
+}) => {
   return (
     <div className="p-10">
       {!profile && <Loader className="block mt-20 mx-auto" />}
@@ -21,13 +29,13 @@ export const Profile = ({ profile }: { profile: TUserProfile }) => {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke="currentColor"
                     className="ml-5 w-6 h-6 cursor-pointer"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
                     />
                   </svg>
@@ -48,6 +56,7 @@ export const Profile = ({ profile }: { profile: TUserProfile }) => {
             <Button className="w-fit mx-auto bg-black hover:opacity-90 hover:bg-black transition">
               Verify
             </Button>
+            <WorldcoinButton signer={signer} />
           </div>
         </div>
       )}
