@@ -107,8 +107,8 @@ export function HeroText() {
 
 	const { classes } = useStyles();
 	const { isConnecting } = useAccount({
-		onConnect() {
-			router.push("/chat");
+		onConnect({ isReconnected }) {
+			if (!isReconnected) router.push("/chat");
 		},
 	});
 
