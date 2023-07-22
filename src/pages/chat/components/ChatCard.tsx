@@ -31,12 +31,17 @@ export const ChatCard = ({ conversation }: { conversation: TConversation }) => {
           <h2 className="text-white text-sm">
             {isEnsNameLoading ? conversation.addressTo : ensName}
           </h2>
-          <p className="text-xs text-telegram-gray-100">07/12/2023 : 12:43</p>
+          <p className="text-xs text-telegram-gray-100">
+            {new Date().toDateString() ===
+            conversation?.lastMessageDate.toDateString()
+              ? conversation?.lastMessageDate.toLocaleTimeString()
+              : conversation?.lastMessageDate.toLocaleDateString()}
+          </p>
         </div>
         <div className="flex justify-between text-right">
-          <p className="text-xs text-telegram-gray-100">last message preview</p>
-          <div className="p-1 px-2 h-5 leading-3 text-xs font-bold text-white text-center rounded-full bg-telegram-gray-200">
-            <p>8</p>
+          <p className="text-xs text-telegram-gray-100"></p>
+          <div className="bg-red-700 px-2 py-[1px] rounded-[100px] text-sm">
+            8
           </div>
         </div>
       </div>
