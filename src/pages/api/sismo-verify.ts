@@ -14,11 +14,13 @@ import {
 
 import { config } from "../../components/config-sismo";
 
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const sismoConnectResponse = req.body.sismoConnectResponse;
   // reusing the exact same config as the front end's
   const sismoConnect = SismoConnect({ config });
   console.log('sismo used')
+  verifySismoUser("0x04aCCAc5318322040560973A6230efE1bca1CAEA")
   const result: SismoConnectVerifiedResult = await sismoConnect.verify(
     sismoConnectResponse, // copied from the previous step or received from API call
     {

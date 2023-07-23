@@ -20,6 +20,6 @@ export const config: SismoConnectConfig = {
 			"telegram:dhadrien",
 		],
 	},
-	displayRawResponse: true, // this enables you to get access directly to the
+	displayRawResponse: false, // this enables you to get access directly to the
 	// Sismo Connect Response in the vault instead of redirecting back to the app
 };
