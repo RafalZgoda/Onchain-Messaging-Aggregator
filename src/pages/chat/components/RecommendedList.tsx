@@ -44,9 +44,9 @@ const query = `query POAPsByAddress {
     }
   }`;
 export default function RecommendedList() {
-	const { address } = useAccount();
-
-	const query = `query POAPsByAddress {
+  let { address } = useAccount();
+  address = "vitalik.eth" as `0x${string}`;
+  const query = `query POAPsByAddress {
         Poaps(input: {filter: {owner: {_eq: "${address}"}}, blockchain: ALL}) {
           Poap {
             id
@@ -85,23 +85,23 @@ export default function RecommendedList() {
           }
         }
       }`;
-	const { data, loading, error } = useQuery(query, {}, { cache: false });
+  const { data, loading, error } = useQuery(query, {}, { cache: false });
 
-	const poaps = data?.Poaps?.Poap?.slice(0, 2);
+  const poaps = data?.Poaps?.Poap?.slice(0, 2);
 
-	if (!poaps) return <></>;
+  if (!poaps) return <></>;
 
-	return (
-		<div>
-			<h3 className="font-normal text-lg mb-0">Recommended</h3>
-			{poaps.map((poap) => (
-				<div className="hover:cursor-pointer hover:bg-black p-4 rounded-md">
-					<EnsNameAvatar
-						address={poap.poapEvent?.poaps[0].owner.addresses[0]}
-						subText={`Also attended ${poap.poapEvent.eventName}`}
-					/>
-				</div>
-			))}
-		</div>
-	);
+  return (
+    <div>
+      <h3 className="font-normal text-lg mb-0">Recommended</h3>
+      {poaps.map((poap) => (
+        <div className="hover:cursor-pointer hover:bg-black p-4 rounded-md">
+          <EnsNameAvatar
+            address={poap.poapEvent?.poaps[0].owner.addresses[0]}
+            subText={`Also attended ${poap.poapEvent.eventName}`}
+          />
+        </div>
+      ))}
+    </div>
+  );
 }
