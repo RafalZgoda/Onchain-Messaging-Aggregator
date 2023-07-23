@@ -143,7 +143,11 @@ export default function Chat({
     const filteredMessages = messages.filter((message) =>
       platformsFilter.includes(message.platform)
     );
-    setFilteredMessages(filteredMessages);
+    const tenMostRecentsMessages = filteredMessages.slice(
+      filteredMessages.length - 7,
+      filteredMessages.length
+    );
+    setFilteredMessages(tenMostRecentsMessages);
   }, [messages, platformsFilter]);
 
   useEffect(() => {
@@ -445,7 +449,6 @@ export default function Chat({
                 >
                   {activeConversation?.addressTo ? (
                     filteredMessages.map((message, index) => (
-                      (index < filteredMessages.length - 7) && 
                       <Messages key={index} message={message} />
                     ))
                   ) : (
