@@ -14,13 +14,24 @@ const Messages = ({ message }: { message: TMessage }) => {
       </div>
 
       <span
-        className={`bottom-[-8px] absolute text-xs ${
+        className={`bottom-[-8px] absolute text-xs  ${
           message.me ? "right-2" : "left-3"
         }`}
       >
+        <span className="mr-1">
         {new Date().toDateString() === message.sentAt.toDateString()
           ? message.sentAt.toLocaleTimeString()
           : message.sentAt.toLocaleDateString()}
+        </span>
+        
+
+        <Image
+          className="ml-2"
+          src={message.platform.imgUrl}
+          alt="avatar"
+          width={12}
+          height={12}
+        />
       </span>
     </div>
   );

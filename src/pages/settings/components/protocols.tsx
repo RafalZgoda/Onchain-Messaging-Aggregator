@@ -100,7 +100,9 @@ const Protocol = ({
         }}
         // className="border-none bg-[#3C8AFF] text-white px-5 py-2 mt-10  rounded-lg cursor-pointer"
         className={`border-none ${
-          isProtocolSet ? "bg-[#188c25d4]" : "bg-[#761a1ab4] hover:bg-[#761a1a6a] cursor-pointer transition"
+          isProtocolSet
+            ? "bg-[#188c25d4]"
+            : "bg-[#761a1ab4] hover:bg-[#761a1a6a] cursor-pointer transition"
         } text-white px-8 py-4 mt-10  rounded-lg transition`}
       >
         {isProtocolSet ? "Enabled" : "Disabled"}
@@ -125,10 +127,10 @@ export const Protocols = ({
   return (
     <div className="">
       <div className="max-w-7xl">
-        <h1 className="text-center text-white w-8/12 mx-auto">
-          Connect the protocols you want to use to send messages.
+        <h1 className="text-center mt-10 text-white w-full mx-auto">
+          Connect apps for sending and receiving messages.
         </h1>
-        <div className="flex mt-20 justify-center  flex-row ">
+        <div className="flex mt-40 justify-center  flex-row ">
           {MESSAGE_PLATFORMS_ARRAY.map((platform, index) => {
             return (
               <Protocol

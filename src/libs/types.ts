@@ -38,15 +38,15 @@ export const MESSAGE_PLATFORMS = {
     name: "Native",
     imgUrl: "/img/eth.png",
   } as TMessagePlatform,
-  xmtp: {
-    id: "xmtp",
-    name: "XMTP",
-    imgUrl: "/img/xmtp.png",
-  } as TMessagePlatform,
   push: {
     id: "push",
     name: "Push",
     imgUrl: "/img/push.png",
+  } as TMessagePlatform,
+  xmtp: {
+    id: "xmtp",
+    name: "XMTP",
+    imgUrl: "/img/xmtp.png",
   } as TMessagePlatform,
   debankHi: {
     id: "debankHi",
