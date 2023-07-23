@@ -1,11 +1,9 @@
 import WorldcoinButton from "@/components/WorldcoinButton";
 import { isVerified } from "@/libs/supabase";
-import { Button, Loader, LoadingOverlay } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import { TUserProfile } from "@/libs";
-import { providers } from "ethers";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
 export const Profile = ({
   profile,
   signer,
