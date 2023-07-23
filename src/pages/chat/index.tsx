@@ -14,6 +14,7 @@ import {
   MESSAGE_PLATFORMS_ARRAY,
   sendAggregatedMessage,
   sendAggregatedNewMessage,
+  MESSAGE_PLATFORMS,
 } from "@/libs";
 
 import { JsonRpcSigner } from "@ethersproject/providers";
@@ -56,6 +57,10 @@ export default function Chat({
   const [newMessageAddress, setNewMessageAddress] = useState("");
 
   useEffect(() => {
+    console.log({ activeConversation });
+  }, [activeConversation]);
+
+  useEffect(() => {
     if (!signer) return;
     getConversations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,15 +80,25 @@ export default function Chat({
     setActiveConversation(conversation);
   };
 
+  useEffect(() => {
+    console.log({filteredMessages})
+  }, [filteredMessages])
+
   const handleSendMessage = async () => {
+    const isXMTPActive = platformsFilter.includes(MESSAGE_PLATFORMS.xmtp);
+    const isPushActive = platformsFilter.includes(MESSAGE_PLATFORMS.push);
+    const isNativeActive = platformsFilter.includes(MESSAGE_PLATFORMS.native);
+
     await sendAggregatedMessage({
-      conversation_xmtp: activeConversation.conversation_xmtp,
+      conversation_xmtp: isXMTPActive && activeConversation.conversation_xmtp,
       message: inputValue,
       signer,
-      pgpPrivateKey: pushPGPKey,
+      pgpPrivateKey: isPushActive && pushPGPKey,
       otherAddress: activeConversation.addressTo,
       userAddress: await signer.getAddress(),
-      conversation_push_request: activeConversation.conversation_push_request,
+      conversation_push_request:
+        isPushActive && activeConversation.conversation_push_request,
+      isNativeActive,
     });
     setInputValue("");
     await refreshConversations();
@@ -96,6 +111,7 @@ export default function Chat({
       newMessageAddress === signer._address
     )
       return;
+
     await sendAggregatedNewMessage({
       addressTo: newMessageAddress,
       message: inputValue,
@@ -126,12 +142,13 @@ export default function Chat({
     const userAddress = await signer.getAddress();
     const messages = await getAggregatedMessages({
       conversation_xmtp: activeConversation?.conversation_xmtp,
-      userAddress,
+      userAddress: userAddress.toLowerCase(),
       conversation_push: activeConversation?.conversation_push,
       conversation_push_request: activeConversation?.conversation_push_request,
       pgpPrivateKey: pushPGPKey,
-      otherAddress: activeConversation?.addressTo,
+      otherAddress: activeConversation?.addressTo.toLowerCase(),
     });
+    console.log({ front: messages });
     setMessages(messages);
   };
 
@@ -354,7 +371,7 @@ export default function Chat({
                 </div>
 
                 {connversations &&
-                  connversations.length &&
+                  connversations.length > 0 &&
                   activeConversation &&
                   platformsFilterVisibility && (
                     <div className="flex items-center justify-end bg-[#26282d]">
