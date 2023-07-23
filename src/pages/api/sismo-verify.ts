@@ -14,7 +14,7 @@ import {
 
 import { config } from "../../components/config-sismo";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const sismoConnectResponse = req.body.sismoConnectResponse;
   // reusing the exact same config as the front end's
   const sismoConnect = SismoConnect({ config });
