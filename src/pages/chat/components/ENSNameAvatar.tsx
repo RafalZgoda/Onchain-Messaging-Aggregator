@@ -40,7 +40,7 @@ export default function EnsNameAvatar({
 		{ cache: false }
 	);
 
-	const xmtpEnabled = data.XMTPs.XMTP[0].isXMTPEnabled;
+	const xmtpEnabled = data?.XMTPs?.XMTP?.[0].isXMTPEnabled;
 
 	useEffect(() => {
 		const checkVerified = async () => {
@@ -82,15 +82,16 @@ export default function EnsNameAvatar({
 							</svg>
 						</Tooltip>
 					)}
-					<Tooltip label="Has XMTP enabled" color="dark">
-						{xmtpEnabled && (
+
+					{xmtpEnabled && (
+						<Tooltip label="Has XMTP enabled" color="dark">
 							<img
 								src="/img/xmtp.png"
 								alt="xmtp enabled"
 								className="w-4 h-4"
 							/>
-						)}
-					</Tooltip>
+						</Tooltip>
+					)}
 					<p className="text-xs">{subText}</p>
 				</div>
 			</div>
