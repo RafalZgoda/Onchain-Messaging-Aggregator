@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,
+  swcMinify: false,
   future: {
     webpack5: true,
   },
@@ -27,7 +27,7 @@ const nextConfig = {
       "ipfs.io",
       "arweave.net",
       "lh3.googleusercontent.com",
-	  "cdn.discordapp.com"
+      "cdn.discordapp.com",
     ],
   },
 };

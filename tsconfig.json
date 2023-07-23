@@ -1,24 +1,30 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": "./src",
+    "incremental": true,
+    "noImplicitAny": false,
     "target": "es5",
+    "baseUrl": "./src",
     "paths": {
       "@/*": ["./*"]
     }
   },
+  
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -26,7 +32,11 @@
     "src/pages/telegram/index.js",
     "src/pages/telegram/index.tjs",
     "src/libs/wagmi-to-ethers.ts",
-    "src/*"
+    "src/*",
+    "public/*",
+    "styles/*",
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
