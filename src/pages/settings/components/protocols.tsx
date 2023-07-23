@@ -149,3 +149,5 @@ export const Protocols = ({
     </div>
   );
 };
+
+export default Protocols;

@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-key */
+/* eslint-disable react/no-unknown-property */
 import {
   createStyles,
   Menu,

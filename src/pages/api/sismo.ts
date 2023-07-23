@@ -27,14 +27,14 @@ export default async function handler(
 	// reusing the exact same config as the front end's
 	const sismoConnect = SismoConnect({ config });
 
-	const result: SismoConnectVerifiedResult = await sismoConnect.verify(
-		sismoConnectResponse, // copied from the previous step or received from API call
-		{
-			auths,
-			claims,
-			signature,
-		}
-	);
+	// const result: SismoConnectVerifiedResult = await sismoConnect.verify(
+	// 	sismoConnectResponse, // copied from the previous step or received from API call
+	// 	{
+	// 		auths,
+	// 		claims,
+	// 		signature,
+	// 	}
+	// );
 
 	// console.log(result.getUserIds(AuthType.VAULT));
 	// // vault anonymous identifier = hash(vaultSecret, AppId)

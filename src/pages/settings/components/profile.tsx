@@ -6,13 +6,13 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import SismoButton from "@/components/SismoButton";
 
-export const Profile = ({
+export default function Profile({
   profile,
   signer,
 }: {
   profile: TUserProfile;
   signer;
-}) => {
+}) {
   const [verified, setVerified] = useState(false);
 
   const checkVerified = async () => {
@@ -125,4 +125,4 @@ export const Profile = ({
       })}
     </div>
   );
-};
+}

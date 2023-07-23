@@ -378,7 +378,7 @@ export default function Chat({
 										connversations.length === 0 &&
 										isWorldcoinFilterChecked && (
 											<p className="text-center px-5">
-												You don't have any conversation
+												You dont have any conversation
 												yet, start a new one, or check
 												your filters.
 											</p>

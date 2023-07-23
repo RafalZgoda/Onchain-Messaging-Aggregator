@@ -1,12 +1,12 @@
 import { Switch } from "@mantine/core";
 
-export const Preferences = ({
+export default function Preferences({
   isWorldcoinFilterChecked,
   setIsWorldcoinFilterChecked,
 }: {
   isWorldcoinFilterChecked: boolean;
   setIsWorldcoinFilterChecked: any;
-}) => {
+}) {
   return (
     <div className="px-20">
       <div>
@@ -30,4 +30,4 @@ export const Preferences = ({
       </div>
     </div>
   );
-};
+}

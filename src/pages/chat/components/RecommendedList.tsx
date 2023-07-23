@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import { init, useQuery } from "@airstack/airstack-react";
 import EnsNameAvatar from "./ENSNameAvatar";
 import { useAccount } from "wagmi";
