@@ -14,6 +14,7 @@ import {
   MESSAGE_PLATFORMS_ARRAY,
   sendAggregatedMessage,
   sendAggregatedNewMessage,
+  MESSAGE_PLATFORMS,
 } from "@/libs";
 
 import { JsonRpcSigner } from "@ethersproject/providers";
@@ -21,17 +22,32 @@ import { Button, Input, Modal, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Checkbox } from "@mantine/core";
 import { useRouter } from "next/router";
-import EnsNameAvatar from "./components/EnsNameAvatar";
+import EnsNameAvatar from "./components/ENSNameAvatar";
+import { isVerified } from "@/libs/supabase";
 
 export default function Chat({
   xmtp,
   signer,
   pushPGPKey,
+  isWorldcoinFilterChecked,
+  setIsWorldcoinFilterChecked,
 }: {
   xmtp: TXMTPClient;
   signer: JsonRpcSigner;
   pushPGPKey: string;
+  isWorldcoinFilterChecked: boolean;
+  setIsWorldcoinFilterChecked: any;
 }) {
+  // const [loadingFilters, setLoadingFilters] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [firstload, setFirstLoad] = useState(true);
+
+  // const updateFilters = async () => {
+  //   const is = await isWorldcoinFilter(signer._address);
+  //   setIsWorldcoinFilterChecked(is);
+  //   setLoadingFilters(false);
+  // };
+
   const router = useRouter();
   useEffect(() => {
     if (!signer) {
@@ -56,6 +72,10 @@ export default function Chat({
   const [newMessageAddress, setNewMessageAddress] = useState("");
 
   useEffect(() => {
+    console.log({ activeConversation });
+  }, [activeConversation]);
+
+  useEffect(() => {
     if (!signer) return;
     getConversations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,15 +95,25 @@ export default function Chat({
     setActiveConversation(conversation);
   };
 
+  useEffect(() => {
+    console.log({ filteredMessages });
+  }, [filteredMessages]);
+
   const handleSendMessage = async () => {
+    const isXMTPActive = platformsFilter.includes(MESSAGE_PLATFORMS.xmtp);
+    const isPushActive = platformsFilter.includes(MESSAGE_PLATFORMS.push);
+    const isNativeActive = platformsFilter.includes(MESSAGE_PLATFORMS.native);
+
     await sendAggregatedMessage({
-      conversation_xmtp: activeConversation.conversation_xmtp,
+      conversation_xmtp: isXMTPActive && activeConversation.conversation_xmtp,
       message: inputValue,
       signer,
-      pgpPrivateKey: pushPGPKey,
+      pgpPrivateKey: isPushActive && pushPGPKey,
       otherAddress: activeConversation.addressTo,
       userAddress: await signer.getAddress(),
-      conversation_push_request: activeConversation.conversation_push_request,
+      conversation_push_request:
+        isPushActive && activeConversation.conversation_push_request,
+      isNativeActive,
     });
     setInputValue("");
     await refreshConversations();
@@ -96,6 +126,7 @@ export default function Chat({
       newMessageAddress === signer._address
     )
       return;
+
     await sendAggregatedNewMessage({
       addressTo: newMessageAddress,
       message: inputValue,
@@ -112,7 +143,11 @@ export default function Chat({
     const filteredMessages = messages.filter((message) =>
       platformsFilter.includes(message.platform)
     );
-    setFilteredMessages(filteredMessages);
+    const tenMostRecentsMessages = filteredMessages.slice(
+      filteredMessages.length - 7,
+      filteredMessages.length
+    );
+    setFilteredMessages(tenMostRecentsMessages);
   }, [messages, platformsFilter]);
 
   useEffect(() => {
@@ -126,16 +161,19 @@ export default function Chat({
     const userAddress = await signer.getAddress();
     const messages = await getAggregatedMessages({
       conversation_xmtp: activeConversation?.conversation_xmtp,
-      userAddress,
+      userAddress: userAddress.toLowerCase(),
       conversation_push: activeConversation?.conversation_push,
       conversation_push_request: activeConversation?.conversation_push_request,
       pgpPrivateKey: pushPGPKey,
-      otherAddress: activeConversation?.addressTo,
+      otherAddress: activeConversation?.addressTo.toLowerCase(),
     });
+    console.log({ front: messages });
     setMessages(messages);
   };
 
   const getConversations = async () => {
+    if (firstload) setLoading(true);
+    // if (loadingFilters && isWorldcoinFilterChecked) return;
     const conversations = await getAggregatedConversations({
       xmtp_client: xmtp,
       pgpPrivateKey: pushPGPKey,
@@ -150,7 +188,16 @@ export default function Chat({
         setActiveConversation(activeConversationInNewConversations);
       }
     }
-    setConversations(conversations);
+    const verified = [];
+    if (isWorldcoinFilterChecked) {
+      for (const conversation of conversations) {
+        const accept = await isVerified(conversation.addressTo);
+        if (accept) verified.push(conversation);
+      }
+    }
+    setConversations(isWorldcoinFilterChecked ? verified : conversations);
+    setLoading(false);
+    setFirstLoad(false);
   };
 
   const refreshConversations = async () => {
@@ -165,6 +212,7 @@ export default function Chat({
   // set interval which click on refresh button (using id) every 10 seconds
   useEffect(() => {
     if (!signer) return;
+    // updateFilters();
     const interval = setInterval(() => {
       document.getElementById("refreshBtn").click();
     }, 5000);
@@ -297,8 +345,23 @@ export default function Chat({
                     </button>
                   </div>
                 </div>
+
                 <div className="overflow-y-scroll h-full">
-                  {connversations && connversations.length > 0 ? (
+                  {loading && (
+                    <div className="w-full flex justify-center">
+                      <Loader className="mx-auto" />
+                    </div>
+                  )}
+                  {!loading &&
+                    connversations.length === 0 &&
+                    isWorldcoinFilterChecked && (
+                      <p className="text-center px-5">
+                        You don't have any conversation yet, start a new one, or
+                        check your filters.
+                      </p>
+                    )}
+                  {connversations &&
+                    connversations.length > 0 &&
                     connversations.map((conversation, index) => (
                       <div
                         className={`rounded-2xl ml-5 ${
@@ -312,13 +375,7 @@ export default function Chat({
                       >
                         <ChatCard conversation={conversation} />
                       </div>
-                    ))
-                  ) : (
-                    //put some skeleton here
-                    <div className="flex items-center justify-center h-full">
-                      <Loader className="block mx-auto" />
-                    </div>
-                  )}
+                    ))}
                 </div>
               </div>
               <div className="flex flex-col justify-between col-span-2 m-5">
@@ -352,9 +409,8 @@ export default function Chat({
                     </>
                   )}
                 </div>
-
                 {connversations &&
-                  connversations.length &&
+                  connversations.length > 0 &&
                   activeConversation &&
                   platformsFilterVisibility && (
                     <div className="flex items-center justify-end bg-[#26282d]">

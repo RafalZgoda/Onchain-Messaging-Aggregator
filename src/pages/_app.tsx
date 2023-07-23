@@ -10,6 +10,10 @@ import { Platform, getEthersSigner, getUserOnChainData } from "@/libs";
 import { providers } from "ethers";
 import Layout from "@/components/Layout";
 import { RouterTransition } from "@/components/RouterTransition";
+// Import your custom chains
+import { ethereumChain } from "../libs/customChains";
+
+
 const config = createConfig(
   getDefaultConfig({
     appName: "Message aggregator",
@@ -25,6 +29,9 @@ function MyApp({ Component, pageProps }) {
   const [signer, setSigner] = useState<providers.JsonRpcSigner>(null);
   const [myProfile, setMyProfile] = useState(null);
   const [pushPGPKey, setPushPGPKey] = useState("");
+  const [isWorldcoinFilterChecked, setIsWorldcoinFilterChecked] =
+    useState(false);
+
   useEffect(() => setMounted(true), []);
 
   const unwatch = watchWalletClient(
@@ -113,6 +120,8 @@ function MyApp({ Component, pageProps }) {
                 myProfile={myProfile}
                 pushPGPKey={pushPGPKey}
                 setPushPGPKey={setPushPGPKey}
+                isWorldcoinFilterChecked={isWorldcoinFilterChecked}
+                setIsWorldcoinFilterChecked={setIsWorldcoinFilterChecked}
               />
             )}
           </Layout>

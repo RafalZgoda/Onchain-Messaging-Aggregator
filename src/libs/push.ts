@@ -95,7 +95,6 @@ export const getMessagesPush = async ({
   userAddress: string;
 }): Promise<TMessage[]> => {
   const userAddressLower = userAddress.toLowerCase();
-  console.log("1");
   console.log({
     threadhash,
     pgpPrivateKey,
@@ -110,8 +109,7 @@ export const getMessagesPush = async ({
     toDecrypt: true,
     env: ENV.PROD,
   });
-  console.log("2");
-  return response.map((message) => {
+  let messages = response.map((message) => {
     const value = JSON.stringify(message);
     const bytesValue = ethers.utils.toUtf8Bytes(value);
     const hashedValue = ethers.utils.sha256(bytesValue);
@@ -128,6 +126,15 @@ export const getMessagesPush = async ({
       me: message.fromDID.split(":")[1].toLowerCase() === userAddressLower,
     };
   });
+
+  messages = messages.map((message) => {
+    return {
+      ...message,
+      content: message.content.replace(/\"/g, ""),
+    };
+  });
+
+  return messages;
 };
 
 export const sendMessagePush = async ({
@@ -141,7 +148,6 @@ export const sendMessagePush = async ({
   signer: Signer;
   pgpPrivateKey: string;
 }) => {
-  console.log("sending to", to);
   return await PushAPI.chat.send({
     messageContent: message,
     messageType: "Text", // can be "Text" | "Image" | "File" | "GIF"

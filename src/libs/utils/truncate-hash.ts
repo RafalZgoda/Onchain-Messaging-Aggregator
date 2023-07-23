@@ -3,8 +3,8 @@ export function truncateHash(
 	numLettersBefore?: number,
 	numLettersAfter?: number
 ): string {
-	numLettersBefore = numLettersBefore || 5;
-	numLettersAfter = numLettersAfter || 3;
+	numLettersBefore = numLettersBefore || 25;
+	numLettersAfter = numLettersAfter || 25;
 	if (hash.length < numLettersBefore + numLettersAfter) {
 		return hash;
 	}

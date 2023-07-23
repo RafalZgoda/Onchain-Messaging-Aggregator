@@ -1,12 +1,8 @@
-# Whatsapp and Telegram Clone with Tailwind, Only UI
+# S3nd
 
-![](demo.gif)
+![](screen-msg-s3nd.PNG)
 
-# Project setup
-
-This is a [Next.js](https://nextjs.org/) project.
-
-### First install packages and it's dependencies
+### First install packages and it's dependencies and .env
 
 ```
 npm install
@@ -19,13 +15,3 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-Supabse :
-
-Owner address :
-List of addresses conversation
-Last seen ID message
-Date last seen
-isWorldCoin
-isSismo
-isPOA

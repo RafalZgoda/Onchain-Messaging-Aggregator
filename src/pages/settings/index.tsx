@@ -5,6 +5,8 @@ import { TUserProfile, TXMTPClient } from "@/libs";
 import { Profile } from "./components/profile";
 import { providers } from "ethers";
 import { useRouter } from "next/router";
+import { Preferences } from "./components/preferences";
+
 
 export default function Settings({
   myProfile,
@@ -13,6 +15,8 @@ export default function Settings({
   xmtp,
   pushPGPKey,
   setPushPGPKey,
+  isWorldcoinFilterChecked,
+  setIsWorldcoinFilterChecked,
 }: {
   myProfile: TUserProfile;
   setXmtp: any;
@@ -20,6 +24,8 @@ export default function Settings({
   xmtp: TXMTPClient;
   pushPGPKey: string;
   setPushPGPKey: any;
+  isWorldcoinFilterChecked: boolean;
+  setIsWorldcoinFilterChecked: any;
 }) {
   const activeTabCSS = "bg-[#26282d]";
   const [activeTab, setActiveTab] = useState("Profile");
@@ -33,7 +39,32 @@ export default function Settings({
   return (
     <div className="w-full h-screen flex">
       <div className="w-2/12 bg-[#1F1F23] flex flex-col p-5">
-        <nav className="flex flex-col gap-5 text-white text-xl">
+        <nav className="flex flex-col gap-5 text-white text-md">
+          <div
+            onClick={() => {
+              router.push("/chat");
+            }}
+            className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl`}
+          >
+            <div className="flex font-bold">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                className="w-6 h-6 mr-3"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
+                />
+              </svg>
+              Back to Chats
+            </div>
+          </div>
+          <hr className="border-none bg-[#ffffff20] w-full h-0.5" />
           <a
             onClick={() => setActiveTab("Profile")}
             className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${
@@ -66,18 +97,19 @@ export default function Settings({
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              strokeWidth="1.5"
+              stroke-width="1.5"
               stroke="currentColor"
-              className="w-6 h-6 mr-3"
+              class="w-6 h-6 mr-3"
             >
               <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
               />
             </svg>
-            Protocols
+            Apps
           </a>
+
           <a
             onClick={() => setActiveTab("Preferences")}
             className={`cursor-pointer hover:bg-[#26282d] transition flex items-center p-3 rounded-xl ${
@@ -102,7 +134,7 @@ export default function Settings({
           </a>
         </nav>
       </div>
-      <div className="bg-[#26282D] w-full">
+      <div className="bg-[#26282D] w-full flex h-screen justify-center pt-10">
         {activeTab == "Protocols" && (
           <Protocols
             setXmtp={setXmtp}
@@ -114,6 +146,12 @@ export default function Settings({
         )}
         {activeTab == "Profile" && (
           <Profile profile={myProfile} signer={signer} />
+        )}
+        {activeTab == "Preferences" && (
+          <Preferences
+            isWorldcoinFilterChecked={isWorldcoinFilterChecked}
+            setIsWorldcoinFilterChecked={setIsWorldcoinFilterChecked}
+          />
         )}
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { EAS } from "@ethereum-attestation-service/eas-sdk";
 
-export const checkAttestation = async (address: string) => {
+export const checkAttestation = async (address: string,provider:any) => {
   const EASContractAddress = "0x223F2db258234F7Fa164a9e4C0929318FEb3B550";
   const eas = new EAS(address);
   eas.connect(provider);
@@ -13,4 +13,4 @@ export const checkAttestation = async (address: string) => {
   console.log(attestation);
 };
 
-checkAttestation("a");
+// checkAttestation("a");

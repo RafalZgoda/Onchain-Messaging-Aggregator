@@ -9,8 +9,8 @@ export const Logo = () => {
 					alt="S3ND"
 					src="/img/logo.png"
 					className="object-contain w-52 mt-[-25px]"
-					width={100}
-					height={100}
+					width={150}
+					height={150}
 				/>
 			</h1>
 		</Link>
