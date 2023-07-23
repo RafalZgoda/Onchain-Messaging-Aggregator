@@ -14,6 +14,7 @@ import {
   MESSAGE_PLATFORMS_ARRAY,
   sendAggregatedMessage,
   sendAggregatedNewMessage,
+  MESSAGE_PLATFORMS,
 } from "@/libs";
 
 import { JsonRpcSigner } from "@ethersproject/providers";
@@ -48,7 +49,7 @@ export default function Chat({
     MESSAGE_PLATFORMS_ARRAY
   );
   const [platformsFilterVisibility, setPlatformsFilterVisibility] =
-    useState(false);
+    useState(true);
   const [inputValue, setInputValue] = useState("");
 
   const [newMessageModalVisibility, setNewMessageModalVisibility] =
@@ -56,8 +57,12 @@ export default function Chat({
   const [newMessageAddress, setNewMessageAddress] = useState("");
 
   useEffect(() => {
+    console.log({ activeConversation });
+  }, [activeConversation]);
+
+  useEffect(() => {
     if (!signer) return;
-    //getConversations();
+    getConversations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xmtp, signer, pushPGPKey]);
 
@@ -75,15 +80,25 @@ export default function Chat({
     setActiveConversation(conversation);
   };
 
+  useEffect(() => {
+    console.log({filteredMessages})
+  }, [filteredMessages])
+
   const handleSendMessage = async () => {
+    const isXMTPActive = platformsFilter.includes(MESSAGE_PLATFORMS.xmtp);
+    const isPushActive = platformsFilter.includes(MESSAGE_PLATFORMS.push);
+    const isNativeActive = platformsFilter.includes(MESSAGE_PLATFORMS.native);
+
     await sendAggregatedMessage({
-      conversation_xmtp: activeConversation.conversation_xmtp,
+      conversation_xmtp: isXMTPActive && activeConversation.conversation_xmtp,
       message: inputValue,
       signer,
-      pgpPrivateKey: pushPGPKey,
+      pgpPrivateKey: isPushActive && pushPGPKey,
       otherAddress: activeConversation.addressTo,
       userAddress: await signer.getAddress(),
-      conversation_push_request: activeConversation.conversation_push_request,
+      conversation_push_request:
+        isPushActive && activeConversation.conversation_push_request,
+      isNativeActive,
     });
     setInputValue("");
     await refreshConversations();
@@ -96,6 +111,7 @@ export default function Chat({
       newMessageAddress === signer._address
     )
       return;
+
     await sendAggregatedNewMessage({
       addressTo: newMessageAddress,
       message: inputValue,
@@ -126,12 +142,13 @@ export default function Chat({
     const userAddress = await signer.getAddress();
     const messages = await getAggregatedMessages({
       conversation_xmtp: activeConversation?.conversation_xmtp,
-      userAddress,
+      userAddress: userAddress.toLowerCase(),
       conversation_push: activeConversation?.conversation_push,
       conversation_push_request: activeConversation?.conversation_push_request,
       pgpPrivateKey: pushPGPKey,
-      otherAddress: activeConversation?.addressTo,
+      otherAddress: activeConversation?.addressTo.toLowerCase(),
     });
+    console.log({ front: messages });
     setMessages(messages);
   };
 
@@ -155,43 +172,21 @@ export default function Chat({
 
   const refreshConversations = async () => {
     const newActiveConversation = connversations.find(
-      (conversation) => conversation.addressTo === activeConversation.addressTo
+      (conversation) => conversation.addressTo === activeConversation?.addressTo
     );
     setActiveConversation(newActiveConversation);
     await getConversations();
     await getMessages();
   };
-  const [inter, setInter] = useState(null);
-  // useEffect(() => {
-  //   if (!signer || inter) return;
-  //   const interval = setInterval(async () => {
-  //     await refreshConversations();
-  //   }, 10000);
-  //   setInter(interval);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // useEffect(() => {
-  //   if (!signer) return;
-
-  //   const refresh = async () => {
-  //     await refreshConversations();
-  //     setTimeout(refresh, 10000);
-  //   };
-
-  //   refresh();
-
-  //   // Cleanup logic remains same
-  // }, []);
 
   // set interval which click on refresh button (using id) every 10 seconds
-//   useEffect(() => {
-//     if (!signer) return;
-//     const interval = setInterval(() => {
-//       document.getElementById("refreshBtn").click();
-//     }, 5000);
-//     return () => clearInterval(interval);
-//   }, []);
+  useEffect(() => {
+    if (!signer) return;
+    const interval = setInterval(() => {
+      document.getElementById("refreshBtn").click();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const SvgGenerator = (props) => {
     const { path, className } = props;
@@ -311,6 +306,7 @@ export default function Chat({
                       </button>
                     </Tooltip>
                     <button
+                      className="invisible w-0 h-0"
                       id="refreshBtn"
                       onClick={() => refreshConversations()}
                     >
@@ -346,15 +342,7 @@ export default function Chat({
                 <div className="flex items-center justify-between px-5 pt-3 bg-[#26282D] rounded-t-[30px] border-b">
                   {activeConversation?.addressTo && (
                     <>
-                      <EnsNameAvatar
-                        address={activeConversation?.addressTo}
-                        subtext={`Last message ${
-                          new Date().toDateString() ===
-                          activeConversation?.lastMessageDate.toDateString()
-                            ? activeConversation?.lastMessageDate.toLocaleTimeString()
-                            : activeConversation?.lastMessageDate.toLocaleDateString()
-                        }`}
-                      />
+                      <EnsNameAvatar address={activeConversation?.addressTo} />
 
                       <div className="w-40 text-telegram-gray-100 flex justify-end">
                         <button
@@ -382,35 +370,38 @@ export default function Chat({
                   )}
                 </div>
 
-                {platformsFilterVisibility && (
-                  <div className="flex items-center justify-end bg-[#26282d]">
-                    <ul className="flex">
-                      <p className="mr-10 flex">
-                        <Checkbox
-                          onChange={() =>
-                            setPlatformsFilter(MESSAGE_PLATFORMS_ARRAY)
-                          }
-                          checked={
-                            platformsFilter.length ===
-                            MESSAGE_PLATFORMS_ARRAY.length
-                          }
-                          className="w-3 h-3 mr-5"
-                        />
-                        <label>All</label>
-                      </p>
-                      {MESSAGE_PLATFORMS_ARRAY.map((platform, index) => (
-                        <p key={index} className="mr-10 flex">
+                {connversations &&
+                  connversations.length > 0 &&
+                  activeConversation &&
+                  platformsFilterVisibility && (
+                    <div className="flex items-center justify-end bg-[#26282d]">
+                      <ul className="flex">
+                        <p className="mr-10 flex">
                           <Checkbox
-                            onChange={() => handleFilterPlatform(platform)}
-                            checked={platformsFilter.includes(platform)}
+                            onChange={() =>
+                              setPlatformsFilter(MESSAGE_PLATFORMS_ARRAY)
+                            }
+                            checked={
+                              platformsFilter.length ===
+                              MESSAGE_PLATFORMS_ARRAY.length
+                            }
                             className="w-3 h-3 mr-5"
                           />
-                          <label>{platform.name}</label>
+                          <label>All</label>
                         </p>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                        {MESSAGE_PLATFORMS_ARRAY.map((platform, index) => (
+                          <p key={index} className="mr-10 flex">
+                            <Checkbox
+                              onChange={() => handleFilterPlatform(platform)}
+                              checked={platformsFilter.includes(platform)}
+                              className="w-3 h-3 mr-5"
+                            />
+                            <label>{platform.name}</label>
+                          </p>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                 <div
                   className={`relative pb-3 w-full h-full overflow-y-scroll flex justify-${
@@ -422,7 +413,7 @@ export default function Chat({
                       <Messages key={index} message={message} />
                     ))
                   ) : (
-                    <h2 className="text-center">Select a conversion</h2>
+                    <h2 className="text-center">Select a conversation</h2>
                   )}
                 </div>
                 <div className="flex p-1 bg-[#26282D] rounded-b-[30px] px-5 pb-3 pt-5">

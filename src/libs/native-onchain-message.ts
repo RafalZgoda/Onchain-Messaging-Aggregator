@@ -1,10 +1,10 @@
 import { ethers } from "ethers";
 import axios from "axios";
 import "dotenv/config";
-import { TMessage, TConversation } from "./types";
+import { TMessage, TConversation, MESSAGE_PLATFORMS } from "./types";
 
-async function sendMessage(
-  provider: ethers.providers.Web3Provider,
+export async function sendMessageNativeOnchain(
+  provider: any,
   recipient: string,
   message: string
 ): Promise<ethers.providers.TransactionReceipt> {
@@ -85,7 +85,7 @@ const getAllRawMessages = async (address: string): Promise<TMessage[]> => {
         content: message,
 
         me: tx.from.toLowerCase() === address,
-        platform: "native",
+        platform: MESSAGE_PLATFORMS.native
       };
     })
     .filter((tx: any) => tx !== null);

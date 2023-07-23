@@ -11,11 +11,11 @@ import { providers } from "ethers";
 import Layout from "@/components/Layout";
 import { RouterTransition } from "@/components/RouterTransition";
 const config = createConfig(
-	getDefaultConfig({
-		appName: "Message aggregator",
-		alchemyId: "MzUaa0A87yexjd8UKcHm8HIr1f4aghxT",
-		walletConnectProjectId: "a8024e8262cb4e7102941a3577b5a5c0",
-	})
+  getDefaultConfig({
+    appName: "Message aggregator",
+    alchemyId: "MzUaa0A87yexjd8UKcHm8HIr1f4aghxT",
+    walletConnectProjectId: "a8024e8262cb4e7102941a3577b5a5c0",
+  })
 );
 
 function MyApp({ Component, pageProps }) {
@@ -27,14 +27,14 @@ function MyApp({ Component, pageProps }) {
   const [pushPGPKey, setPushPGPKey] = useState("");
   useEffect(() => setMounted(true), []);
 
-	const unwatch = watchWalletClient(
-		{
-			chainId: 1,
-		},
-		(walletClient) => {
-			setWallet(walletClient);
-		}
-	);
+  const unwatch = watchWalletClient(
+    {
+      chainId: 1,
+    },
+    (walletClient) => {
+      setWallet(walletClient);
+    }
+  );
 
   const getProfile = async () => {
     const profile = await getUserOnChainData(
@@ -44,10 +44,10 @@ function MyApp({ Component, pageProps }) {
     setMyProfile(profile);
   };
 
-	const updateSigner = async () => {
-		const signer = await getEthersSigner({ chainId: 1 });
-		setSigner(signer);
-	};
+  const updateSigner = async () => {
+    const signer = await getEthersSigner({ chainId: 1 });
+    setSigner(signer);
+  };
 
   useEffect(() => {
     updateSigner();
@@ -58,11 +58,11 @@ function MyApp({ Component, pageProps }) {
     }
   }, [wallet]);
 
-	useEffect(() => {
-		if (signer) {
-			getProfile();
-		}
-	}, [signer]);
+  useEffect(() => {
+    if (signer) {
+      getProfile();
+    }
+  }, [signer]);
 
   const emptyMessagingClient = () => {
     console.log("emptying messaging client");
