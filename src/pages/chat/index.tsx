@@ -22,7 +22,11 @@ import { useDisclosure } from "@mantine/hooks";
 import { Checkbox } from "@mantine/core";
 import { useRouter } from "next/router";
 import EnsNameAvatar from "./components/ENSNameAvatar";
-import { isVerified, isWorldcoinFilter, updateWorldcoinFilter } from "@/libs/supabase";
+import {
+  isVerified,
+  isWorldcoinFilter,
+  updateWorldcoinFilter,
+} from "@/libs/supabase";
 
 export default function Chat({
   xmtp,
@@ -35,17 +39,21 @@ export default function Chat({
 }) {
   const [isWorldcoinFilterChecked, setIsWorldcoinFilterChecked] =
     useState(false);
+  const [loadingFilters, setLoadingFilters] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [firstload, setFirstLoad] = useState(true)
 
-  const updateWorldcoinFilter = async () => {
-    setIsWorldcoinFilterChecked(await isWorldcoinFilter(signer._address));
-  } 
+  const updateFilters = async () => {
+    const is = await isWorldcoinFilter(signer._address);
+    setIsWorldcoinFilterChecked(is);
+    setLoadingFilters(false);
+  };
 
   const router = useRouter();
   useEffect(() => {
     if (!signer) {
       router.push("/");
     }
-    updateWorldcoinFilter();
   }, [signer]);
 
   const [connversations, setConversations] = useState<TConversation[]>([]);
@@ -145,6 +153,8 @@ export default function Chat({
   };
 
   const getConversations = async () => {
+    if (firstload) setLoading(true);
+    if (loadingFilters) return;
     const conversations = await getAggregatedConversations({
       xmtp_client: xmtp,
       pgpPrivateKey: pushPGPKey,
@@ -159,7 +169,17 @@ export default function Chat({
         setActiveConversation(activeConversationInNewConversations);
       }
     }
-    setConversations(conversations);
+    const verified = [];
+    if (isWorldcoinFilterChecked) {
+      for (const conversation of conversations) {
+        const accept = await isVerified(conversation.addressTo);
+        if (accept) verified.push(conversation);
+      }
+    }
+    console.log(verified);
+    setConversations(isWorldcoinFilterChecked ? verified : conversations);
+    setLoading(false);
+    setFirstLoad(false)
   };
 
   const refreshConversations = async () => {
@@ -174,6 +194,7 @@ export default function Chat({
   // set interval which click on refresh button (using id) every 10 seconds
   useEffect(() => {
     if (!signer) return;
+    updateFilters();
     const interval = setInterval(() => {
       document.getElementById("refreshBtn").click();
     }, 5000);
@@ -306,8 +327,20 @@ export default function Chat({
                     </button>
                   </div>
                 </div>
+
                 <div className="overflow-y-scroll h-full">
-                  {connversations && connversations.length > 0 ? (
+                  {loadingFilters || loading && (
+                    <div className="w-full flex justify-center">
+                      <Loader className="mx-auto" />
+                    </div>
+                  )}
+                  {!loadingFilters && !loading && connversations.length === 0 && (
+                    <p className="text-center px-5">
+                      You don't have any conversation yet, start a new one, or check your filters.
+                    </p>
+                    )}
+                  {connversations &&
+                    connversations.length > 0 &&
                     connversations.map((conversation, index) => (
                       <div
                         className={`rounded-2xl ml-5 ${
@@ -321,13 +354,7 @@ export default function Chat({
                       >
                         <ChatCard conversation={conversation} />
                       </div>
-                    ))
-                  ) : (
-                    //put some skeleton here
-                    <div className="flex items-center justify-center h-full">
-                      <Loader className="block mx-auto" />
-                    </div>
-                  )}
+                    ))}
                 </div>
               </div>
               <div className="flex flex-col justify-between col-span-2 m-5">
@@ -361,9 +388,9 @@ export default function Chat({
                     </>
                   )}
                 </div>
-
-                {connversations &&
-                  connversations.length &&
+                {!loadingFilters &&
+                  connversations &&
+                  connversations.length > 0 &&
                   activeConversation &&
                   platformsFilterVisibility && (
                     <div className="flex items-center justify-end bg-[#26282d]">
