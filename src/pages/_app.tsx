@@ -10,6 +10,10 @@ import { Platform, getEthersSigner, getUserOnChainData } from "@/libs";
 import { providers } from "ethers";
 import Layout from "@/components/Layout";
 import { RouterTransition } from "@/components/RouterTransition";
+// Import your custom chains
+import { ethereumChain } from "../libs/customChains";
+
+
 const config = createConfig(
   getDefaultConfig({
     appName: "Message aggregator",
