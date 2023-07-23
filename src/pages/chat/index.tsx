@@ -445,6 +445,7 @@ export default function Chat({
                 >
                   {activeConversation?.addressTo ? (
                     filteredMessages.map((message, index) => (
+                      (index < filteredMessages.length - 7) && 
                       <Messages key={index} message={message} />
                     ))
                   ) : (
