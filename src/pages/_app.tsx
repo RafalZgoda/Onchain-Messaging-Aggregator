@@ -29,6 +29,9 @@ function MyApp({ Component, pageProps }) {
   const [signer, setSigner] = useState<providers.JsonRpcSigner>(null);
   const [myProfile, setMyProfile] = useState(null);
   const [pushPGPKey, setPushPGPKey] = useState("");
+  const [isWorldcoinFilterChecked, setIsWorldcoinFilterChecked] =
+    useState(false);
+
   useEffect(() => setMounted(true), []);
 
   const unwatch = watchWalletClient(
@@ -117,6 +120,8 @@ function MyApp({ Component, pageProps }) {
                 myProfile={myProfile}
                 pushPGPKey={pushPGPKey}
                 setPushPGPKey={setPushPGPKey}
+                isWorldcoinFilterChecked={isWorldcoinFilterChecked}
+                setIsWorldcoinFilterChecked={setIsWorldcoinFilterChecked}
               />
             )}
           </Layout>

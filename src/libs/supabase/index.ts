@@ -32,12 +32,10 @@ export const setLastSeen = async (lastSeenHash, owner, recipient) => {
 };
 
 export const verifyUser = async (address) => {
-  const { data, error } = await supabase
-    .from("users")
-    .insert({
-      address: address.toLowerCase(),
-      isVerifiedWorldcoin: true
-    })
+  const { data, error } = await supabase.from("users").insert({
+    address: address.toLowerCase(),
+    isVerifiedWorldcoin: true,
+  });
   if (error) throw error;
   return data;
 };
@@ -49,4 +47,24 @@ export const isVerified = async (address) => {
     .eq("address", address.toLowerCase());
   if (error) throw error;
   return data.length > 0;
-}
+};
+
+export const updateWorldcoinFilter = async (address, worldcoinFilter) => {
+  const { data, error } = await supabase
+    .from("users")
+    .update({ worldcoinFilter })
+    .eq("address", address.toLowerCase());
+  if (error) throw error;
+};
+
+export const isWorldcoinFilter = async (address): Promise<boolean> => {
+  const { data, error } = await supabase
+    .from("users")
+    .select("worldcoinFilter")
+    .eq("address", address.toLowerCase());
+  if (error) throw error;
+  if (data[0]?.worldcoinFilter) {
+    return data[0]?.worldcoinFilter;
+  }
+  return false;
+};
