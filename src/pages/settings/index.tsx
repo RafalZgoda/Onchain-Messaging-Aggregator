@@ -102,7 +102,7 @@ export default function Settings({
           </a>
         </nav>
       </div>
-      <div className="bg-[#26282D] w-full">
+      <div className="bg-[#26282D] w-full flex h-screen justify-center pt-10">
         {activeTab == "Protocols" && (
           <Protocols
             setXmtp={setXmtp}

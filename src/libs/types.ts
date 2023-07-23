@@ -33,6 +33,11 @@ export type TMessagePlatform = {
 };
 
 export const MESSAGE_PLATFORMS = {
+  native: {
+    id: "native",
+    name: "Native",
+    imgUrl: "/img/eth.png",
+  } as TMessagePlatform,
   xmtp: {
     id: "xmtp",
     name: "XMTP",
@@ -43,10 +48,20 @@ export const MESSAGE_PLATFORMS = {
     name: "Push",
     imgUrl: "/img/push.png",
   } as TMessagePlatform,
-  native: {
-    id: "native",
-    name: "Native",
-    imgUrl: "/img/eth.png",
+  debankHi: {
+    id: "debankHi",
+    name: "DebankHi",
+    imgUrl: "/img/debankhi.png",
+  } as TMessagePlatform,
+  nansen: {
+    id: "nansen",
+    name: "Nansen",
+    imgUrl: "/img/nansen.png",
+  } as TMessagePlatform,
+  blockscan: {
+    id: "blockscan",
+    name: "Blockscan",
+    imgUrl: "/img/blockscan.png",
   } as TMessagePlatform,
 };
 

@@ -18,7 +18,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const sismoConnectResponse = req.body.sismoConnectResponse;
   // reusing the exact same config as the front end's
   const sismoConnect = SismoConnect({ config });
-
+  console.log('sismo used')
   const result: SismoConnectVerifiedResult = await sismoConnect.verify(
     sismoConnectResponse, // copied from the previous step or received from API call
     {
