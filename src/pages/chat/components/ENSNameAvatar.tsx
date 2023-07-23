@@ -3,7 +3,16 @@ import { useEnsAvatar, useEnsName } from "wagmi";
 import { useEffect, useState } from "react";
 import { isVerified } from "@/libs/supabase";
 import { Tooltip } from "@mantine/core";
+import { init, useQuery } from "@airstack/airstack-react";
 
+init(process.env.NEXT_PUBLIC_AIRSTACK_KEY);
+const query = `query MyQuery($address: Identity!) {
+	XMTPs(input: {blockchain: ALL, filter: {owner: {_eq: $address}}}) {
+	  XMTP {
+		isXMTPEnabled
+	  }
+	}
+  }`;
 export default function EnsNameAvatar({
 	address,
 	avatarSize,
@@ -24,6 +33,14 @@ export default function EnsNameAvatar({
 	});
 
 	const [isWordlcoinVerified, setVerified] = useState(false);
+
+	const { data, loading, error } = useQuery(
+		query,
+		{ address: address },
+		{ cache: false }
+	);
+
+	const xmtpEnabled = data.XMTPs.XMTP[0].isXMTPEnabled;
 
 	useEffect(() => {
 		const checkVerified = async () => {
@@ -65,6 +82,15 @@ export default function EnsNameAvatar({
 							</svg>
 						</Tooltip>
 					)}
+					<Tooltip label="Has XMTP enabled" color="dark">
+						{xmtpEnabled && (
+							<img
+								src="/img/xmtp.png"
+								alt="xmtp enabled"
+								className="w-4 h-4"
+							/>
+						)}
+					</Tooltip>
 					<p className="text-xs">{subText}</p>
 				</div>
 			</div>
