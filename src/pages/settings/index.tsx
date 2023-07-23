@@ -1,11 +1,12 @@
+/* eslint-disable react/no-unknown-property */
 import { Logo } from "components/Logo";
 import { useState, useEffect } from "react";
 import { Protocols } from "./components/protocols";
 import { TUserProfile, TXMTPClient } from "@/libs";
-import { Profile } from "./components/profile";
+import Profile from "./components/profile";
 import { providers } from "ethers";
 import { useRouter } from "next/router";
-import { Preferences } from "./components/preferences";
+import Preferences from "./components/preferences";
 import { useAccount } from "wagmi";
 
 export default function Settings({
@@ -100,7 +101,7 @@ export default function Settings({
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="w-6 h-6 mr-3"
+              className="w-6 h-6 mr-3"
             >
               <path
                 stroke-linecap="round"
