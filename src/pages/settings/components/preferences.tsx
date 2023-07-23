@@ -27,6 +27,39 @@ export default function Preferences({
           />
           <p className="ml-3 text-xl">Only show verified users</p>
         </div>
+        <div className="flex items-center">
+          <Switch
+            size="xl"
+            onLabel="ON"
+            offLabel="OFF"
+            onChange={() => {
+              console.log("hello");
+            }}
+          />
+          <p className="ml-3 text-xl">Only show more than 0.10 ETH users</p>
+        </div>
+        <div className="flex items-center">
+          <Switch
+            size="xl"
+            onLabel="ON"
+            offLabel="OFF"
+            onChange={() => {
+              console.log("hello");
+            }}
+          />
+          <p className="ml-3 text-xl">Only show more than 100 txs users</p>
+        </div>
+        <div className="flex items-center">
+          <Switch
+            size="xl"
+            onLabel="ON"
+            offLabel="OFF"
+            onChange={() => {
+              console.log("hello");
+            }}
+          />
+          <p className="ml-3 text-xl">Only show Punk owners</p>
+        </div>
       </div>
     </div>
   );
