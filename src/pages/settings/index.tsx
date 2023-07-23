@@ -6,7 +6,7 @@ import { Profile } from "./components/profile";
 import { providers } from "ethers";
 import { useRouter } from "next/router";
 import { Preferences } from "./components/preferences";
-
+import { useAccount } from "wagmi";
 
 export default function Settings({
   myProfile,
@@ -30,11 +30,12 @@ export default function Settings({
   const activeTabCSS = "bg-[#26282d]";
   const [activeTab, setActiveTab] = useState("Profile");
   const router = useRouter();
+  const { address } = useAccount();
   useEffect(() => {
-    if (!signer) {
+    if (!address) {
       router.push("/");
     }
-  }, [signer]);
+  }, [address, router]);
 
   return (
     <div className="w-full h-screen flex">

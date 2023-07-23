@@ -68,3 +68,23 @@ export const isWorldcoinFilter = async (address): Promise<boolean> => {
   }
   return false;
 };
+
+
+export const verifySismoUser = async (address) => {
+  const { data, error } = await supabase.from("users").insert({
+    address: address.toLowerCase(),
+    isVerifiedSismo: true,
+  });
+  if (error) throw error;
+  return data;
+};
+
+export const isVerifiedSismo = async (address) => {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("address", address.toLowerCase());
+  if (error) throw error;
+  // @ts-ignore
+  return data.isVerifiedSismo;
+};
